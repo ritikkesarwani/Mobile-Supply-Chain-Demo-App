@@ -7,7 +7,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <ion-form [formGroup]="loginForm" class="ion-padding form-container">
+        <form [formGroup]="loginForm" class="ion-padding form-container">
           <ion-grid>
             <ion-row class="ion-align-items-center">
               <ion-col size="1" class="ion-text-center">
@@ -29,7 +29,7 @@
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center ion-margin-top">
-                <ion-button type="submit" expand="block" (click)="login()" shape="round" [disabled]="loginForm.invalid">Login</ion-button>
+                <ion-button type="submit" expand="block" (click)="login()" shape="round" >Login</ion-button>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -38,7 +38,7 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-        </ion-form>
+        </form>
       </ion-col>
     </ion-row>
     <ion-row>
