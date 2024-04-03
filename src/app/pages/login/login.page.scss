@@ -1,0 +1,32 @@
+.login-page {
+    .main-title {
+        margin-top: 50px;
+    }
+
+    .form {
+        margin-top: 30px;
+
+        ion-input {
+
+            margin-bottom: 10px;
+        }
+
+        ion-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+    }
+
+    .logo {
+        margin-top: 30px;
+
+        img {
+            max-width: 200px;
+        }
+    }
+}
+
+.login {
+    margin-top: 40px;
+
+}
