@@ -17,32 +17,60 @@ export class OrgListPage implements OnInit {
 
   selectedOrg: any = null;
   allOrganization: boolean = false;
+  organisations: any[] = [];
 
-  Organizations: any[] = [
-    { id: 1, shortForm: 'Org1', name: 'Organization 1' },
-    { id: 2, shortForm: 'Org2', name: 'Organization 2' },
-    { id: 3, shortForm: 'Org3', name: 'Organization 3' },
-  ];
+
+  // Organizations: any[] = [
+  //   { id: 1, shortForm: 'Org1', name: 'Organization 1' },
+  //   { id: 2, shortForm: 'Org2', name: 'Organization 2' },
+  //   { id: 3, shortForm: 'Org3', name: 'Organization 3' },
+  // ];
 
   constructor(
     private nodeApiService: NodeApiService,
     private navCtrl: NavController,
     private loginService: LoginService,
     private databaseService: DatabaseService
-    ) { }
+  ) { }
 
-  async allOrg(){
+  async allOrg() {
     let orgId = await this.databaseService.getValue('orgId');
-    console.log(orgId,"ritik")
+    console.log(orgId, "ritik")
 
-    // if(!this.allOrganization){
+    if (!this.allOrganization) {
       this.nodeApiService.getAllOrganization(orgId).subscribe({
-       next: async (data: any) => console.log('Data received of all organization name', data)
-        // error: error => console.error('Error occurred:', error),
-        // complete: () => console.log('Request completed')
-      })
-   // }
+        next: async (data: any) => {
+          console.log(data.status)
 
+          if (data && data.status === 200) {
+            const allOrgData = data.body;
+
+            const [headers, ...dataWithoutHeaders] = allOrgData;
+            // Convert data to key-value pairs
+            const orgList = dataWithoutHeaders.map((dataRow: { [x: string]: any; }) => {
+              const org: any = {};
+              headers.forEach((header: string | number, index: number) => {
+                org[header] = dataRow[index];
+              });
+              return org;
+            });
+
+            this.organisations = orgList;
+
+            console.log(this.organisations)
+
+          } else {
+            console.log("Error from the server")
+          }
+
+        },
+        error: (error: any) => console.error('Error occurred:', error),
+        complete: () => console.log('Request completed')
+      })
+    }
+    else {
+      console.log("Data loaded previously")
+    }
   }
 
 
@@ -66,6 +94,6 @@ export class OrgListPage implements OnInit {
   confirm() {
   }
 
- 
+
 
 }

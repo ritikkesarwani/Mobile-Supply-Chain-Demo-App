@@ -8,10 +8,10 @@
   <ion-searchbar placeholder="Search organizations" class="search-bar"></ion-searchbar>
 
   <ion-list class="org-list" lines="none">
-    <ion-item *ngFor="let organization of Organizations" class="org-item" (click)="onSelect(organization)">
+    <ion-item *ngFor="let organization of organisations" class="org-item" (click)="onSelect(organization)">
       <ion-label>
-        <h2>{{ organization.shortForm }}</h2>
-        <p>{{ organization.name }}</p>
+        <h2>{{ organization.InventoryOrgCode }}</h2>
+        <p>{{ organization.InventoryOrgName }}</p>
       </ion-label>
       <ion-icon [name]="(organization === selectedOrg) ? 'checkmark-circle' : 'checkmark-circle-outline'" slot="start" color="primary"></ion-icon>
     </ion-item>
