@@ -14,4 +14,8 @@ export class NodeApiService {
   userLogin(username:string,password:string) {
     return this.http.post("https://testnode.propelapps.com/EBS/20D/login", {username,password});
   }
+
+  getAllOrganization(id: any) {
+    return this.http.get(`https://testnode.propelapps.com/EBS/23A/getInventoryOrganizationsTable/${id}`, {observe:'response'});
+  }
 }

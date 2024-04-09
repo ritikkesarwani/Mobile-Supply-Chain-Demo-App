@@ -11,7 +11,11 @@ const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
+  },  {
+    path: 'org-list',
+    loadChildren: () => import('./pages/org-list/org-list.module').then( m => m.OrgListPageModule)
   },
+
 
 ];
 

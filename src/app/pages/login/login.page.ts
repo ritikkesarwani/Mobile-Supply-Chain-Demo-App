@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
-import { NodeApiService } from 'src/app/services/node-api.service';
+import { LoginService } from 'src/app/services/login.service';
+
 
 @Component({
   selector: 'app-login',
@@ -13,10 +13,7 @@ export class LoginPage implements OnInit {
   loginForm!: FormGroup;
   showPassword: boolean = false;
 
-  constructor(
-    private toastController: ToastController,
-    private nodeApiService: NodeApiService
-    ) { }
+  constructor(private loginService: LoginService) { }
 
   ngOnInit() {
     this.loginForm = new FormGroup({
@@ -25,35 +22,10 @@ export class LoginPage implements OnInit {
     })
   }
 
-  async login(){
+  async login() {
     const username = this.loginForm.value.username;
     const password = this.loginForm.value.password;
-    if (!username || username.trim() === '') {
-      const toast = await this.toastController.create({
-        header: 'Error',
-        message: "Please enter username",
-        duration: 1500,
-        
-      });
-      await toast.present();
-      return;
-    }
-    if (!password || password.trim() === '') {
-      const toast = await this.toastController.create({
-        header: 'Error',
-        message: "Please enter your password",
-        duration: 1500,
-      });
-      await toast.present();
-      return;
-    }
-
-    this.nodeApiService.userLogin(username, password).subscribe((data)=>{
-      console.log("success",data)
-    });
-
-
+    this.loginService.login(username, password);
   }
-  
 
 }

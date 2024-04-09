@@ -11,7 +11,7 @@
           <ion-grid>
             <ion-row class="ion-align-items-center">
               <ion-col size="1" class="ion-text-center">
-                <ion-icon name="person" ></ion-icon>
+                <ion-icon name="person"></ion-icon>
               </ion-col>
               <ion-col>
                 <ion-input type="text" placeholder="Enter your username" formControlName="username"></ion-input>
@@ -22,14 +22,16 @@
                 <ion-icon name="lock-closed"></ion-icon>
               </ion-col>
               <ion-col>
-                <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password" formControlName="password">
-                  <ion-icon [name]="showPassword ? 'eye' : 'eye-off'" (click)="showPassword = !showPassword" slot="end"></ion-icon>
+                <ion-input [type]="showPassword ? 'text' : 'password'" placeholder="Enter your password"
+                  formControlName="password">
+                  <ion-icon [name]="showPassword ? 'eye' : 'eye-off'" (click)="showPassword = !showPassword"
+                    slot="end"></ion-icon>
                 </ion-input>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col class="ion-text-center ion-margin-top">
-                <ion-button type="submit" expand="block" (click)="login()" shape="round" >Login</ion-button>
+                <ion-button type="submit" expand="block" (click)="login()" shape="round">Login</ion-button>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -43,7 +45,7 @@
     </ion-row>
     <ion-row>
       <ion-col size="12" class="ion-text-center">
-        <ion-img src="https://media.licdn.com/dms/image/C4E0BAQGw_BMcGjdmqw/company-logo_200_200/0/1630564424524/algarytm_logo?e=1720051200&v=beta&t=1Rud3Fa8S_a3nLF_ttQQSkmn85uWT1odwvDJcIcjoDE" alt="Company Logo"></ion-img>
+        <ion-img src="assets/images/Logo.png"></ion-img>
       </ion-col>
     </ion-row>
   </ion-grid>

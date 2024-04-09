@@ -10,6 +10,10 @@ import { LoginPageRoutingModule } from './login-routing.module';
 import { LoginPage } from './login.page';
 
 
+import { SQLite } from '@ionic-native/sqlite';
+import { Storage } from '@ionic/storage-angular';
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -18,6 +22,8 @@ import { LoginPage } from './login.page';
     IonicModule,
     LoginPageRoutingModule
   ],
+  providers: [SQLite,Storage],
+
   declarations: [LoginPage]
 })
 export class LoginPageModule {}

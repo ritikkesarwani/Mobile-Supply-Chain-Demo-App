@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Select Organizations</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="org-content">
+  <ion-searchbar placeholder="Search organizations" class="search-bar"></ion-searchbar>
+
+  <ion-list class="org-list" lines="none">
+    <ion-item *ngFor="let organization of Organizations" class="org-item" (click)="onSelect(organization)">
+      <ion-label>
+        <h2>{{ organization.shortForm }}</h2>
+        <p>{{ organization.name }}</p>
+      </ion-label>
+      <ion-icon [name]="(organization === selectedOrg) ? 'checkmark-circle' : 'checkmark-circle-outline'" slot="start" color="primary"></ion-icon>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="confirm()" [disabled]="!selectedOrg" class="confirm-btn">Confirm</ion-button>
+  </ion-toolbar>
+</ion-footer>
