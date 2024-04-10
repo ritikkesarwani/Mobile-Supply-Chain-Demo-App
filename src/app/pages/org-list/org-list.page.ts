@@ -70,12 +70,12 @@ export class OrgListPage implements OnInit {
     //   // Deselect the organization if it's already selected
     //   this.selectedOrg = null;
     // } else {
-      // Select the organization if it's not already selected
-      this.selectedOrg = organization;
-   // }
+    // Select the organization if it's not already selected
+    this.selectedOrg = organization;
+    // }
   }
 
- async confirm() {
+  async confirm() {
     if (this.selectedOrg) {
       await this.databaseService.setValue('selectedOrg', this.selectedOrg);
       await this.databaseService.setValue('selectedOrgInvCode', this.selectedOrg.InventoryOrgCode);

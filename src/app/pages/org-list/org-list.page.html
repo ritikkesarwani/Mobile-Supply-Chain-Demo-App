@@ -5,13 +5,13 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="org-content">
-  <ion-searchbar (ionInput)="onSearch($event)" (ionClear)="onClearSearch()" [(ngModel)]="searchQuery" placeholder="Search organizations"
-    class="search-bar"></ion-searchbar>
-    <ion-refresher  (ionRefresh)="handleRefresh($event)">
-      <ion-refresher-content   refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
-    </ion-refresher>
+  <ion-searchbar (ionInput)="onSearch($event)" (ionClear)="onClearSearch()" [(ngModel)]="searchQuery"
+    placeholder="Search organizations" class="search-bar"></ion-searchbar>
+  <ion-refresher (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content refreshingSpinner="circles" refreshingText="Refreshing..."></ion-refresher-content>
+  </ion-refresher>
   <ion-list class="org-list">
-   
+
     <ion-item *ngFor="let organization of filteredOrganisations" class="org-item" (click)="onSelect(organization)">
       <ion-label>
         <h2>{{ organization.InventoryOrgCode }}</h2>
