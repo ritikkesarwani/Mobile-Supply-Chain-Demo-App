@@ -1,36 +1,39 @@
 /* org-list.page.scss */
 
 ion-header {
-    ion-toolbar {
-      ion-title {
-        text-align: center;
-      }
+  ion-toolbar {
+    ion-title {
+      text-align: center;
     }
   }
-  
-  ion-content {
-    
-  
-    ion-list {
-      ion-item {
-        ion-grid {
-          ion-text {
-            font-weight: bold;
-          }
-  
-          ion-label {
-            margin-left: 10px;
-          }
+}
+
+ion-content {
+ 
+  ion-refresher-content {
+    margin-top: 50px;
+  }
+
+
+  ion-list {
+    ion-item {
+      ion-grid {
+        ion-text {
+          font-weight: bold;
+        }
+
+        ion-label {
+          margin-left: 10px;
         }
       }
     }
   }
-  
-  ion-footer {
-    ion-toolbar {
-      ion-button {
-        margin: 10px;
-      }
+}
+
+ion-footer {
+  ion-toolbar {
+    ion-button {
+      margin: 10px;
     }
   }
-  
+}

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { DatabaseService } from 'src/app/services/database.service';
-import { LoginService } from 'src/app/services/login.service';
 import { NodeApiService } from 'src/app/services/node-api.service';
 
 @Component({
@@ -10,44 +9,37 @@ import { NodeApiService } from 'src/app/services/node-api.service';
   styleUrls: ['./org-list.page.scss'],
 })
 export class OrgListPage implements OnInit {
-
-  ngOnInit() {
-    this.allOrg();
-  }
-
   selectedOrg: any = null;
   allOrganization: boolean = false;
   organisations: any[] = [];
-
-
-  // Organizations: any[] = [
-  //   { id: 1, shortForm: 'Org1', name: 'Organization 1' },
-  //   { id: 2, shortForm: 'Org2', name: 'Organization 2' },
-  //   { id: 3, shortForm: 'Org3', name: 'Organization 3' },
-  // ];
+  filteredOrganisations: any[] = [];
+  searchQuery: string = '';
 
   constructor(
     private nodeApiService: NodeApiService,
     private navCtrl: NavController,
-    private loginService: LoginService,
     private databaseService: DatabaseService
   ) { }
 
-  async allOrg() {
+  ngOnInit() {
+    this.loadAllOrganizations();
+  }
+
+  async loadAllOrganizations() {
     let orgId = await this.databaseService.getValue('orgId');
-    console.log(orgId, "ritik")
+    console.log(orgId, "ritik");
 
     if (!this.allOrganization) {
       this.nodeApiService.getAllOrganization(orgId).subscribe({
         next: async (data: any) => {
-          console.log(data.status)
+          console.log(data.status);
 
           if (data && data.status === 200) {
             const allOrgData = data.body;
 
             const [headers, ...dataWithoutHeaders] = allOrgData;
             // Convert data to key-value pairs
-            const orgList = dataWithoutHeaders.map((dataRow: { [x: string]: any; }) => {
+            const orgList = dataWithoutHeaders.map((dataRow: any) => {
               const org: any = {};
               headers.forEach((header: string | number, index: number) => {
                 org[header] = dataRow[index];
@@ -56,44 +48,59 @@ export class OrgListPage implements OnInit {
             });
 
             this.organisations = orgList;
+            this.filteredOrganisations = orgList;
 
-            console.log(this.organisations)
+            console.log(this.organisations);
 
           } else {
-            console.log("Error from the server")
+            console.log("Error from the server");
           }
-
         },
         error: (error: any) => console.error('Error occurred:', error),
         complete: () => console.log('Request completed')
-      })
+      });
     }
     else {
-      console.log("Data loaded previously")
+      console.log("Data loaded previously");
     }
   }
 
-
-
-
-
-
-
-
-  onSelect(Organization: any) {
-    if (this.selectedOrg && this.selectedOrg.id === Organization.id) {
-      // Deselect the organization if it's already selected
-      this.selectedOrg = null;
-    } else {
+  onSelect(organization: any) {
+    // if (this.selectedOrg && this.selectedOrg.id === organization.id) {
+    //   // Deselect the organization if it's already selected
+    //   this.selectedOrg = null;
+    // } else {
       // Select the organization if it's not already selected
-      this.selectedOrg = Organization;
+      this.selectedOrg = organization;
+   // }
+  }
+
+ async confirm() {
+    if (this.selectedOrg) {
+      await this.databaseService.setValue('selectedOrg', this.selectedOrg);
+      await this.databaseService.setValue('selectedOrgInvCode', this.selectedOrg.InventoryOrgCode);
+      this.navCtrl.navigateForward('/activity');
     }
   }
 
-
-  confirm() {
+  onSearch(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    this.filteredOrganisations = this.organisations.filter(org =>
+      org.InventoryOrgCode.toLowerCase().includes(searchTerm) ||
+      org.InventoryOrgName.toLowerCase().includes(searchTerm)
+    );
   }
 
+  onClearSearch() {
+    this.filteredOrganisations = this.organisations;
+  }
 
+  async handleRefresh(event: any) {
+    setTimeout(() => {
+      this.loadAllOrganizations();
+      this.searchQuery = '';
+      event.detail.complete();
+    }, 2000);
+  }
 
 }
