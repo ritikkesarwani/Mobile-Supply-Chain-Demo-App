@@ -66,13 +66,7 @@ export class OrgListPage implements OnInit {
   }
 
   onSelect(organization: any) {
-    // if (this.selectedOrg && this.selectedOrg.id === organization.id) {
-    //   // Deselect the organization if it's already selected
-    //   this.selectedOrg = null;
-    // } else {
-    // Select the organization if it's not already selected
     this.selectedOrg = organization;
-    // }
   }
 
   async confirm() {

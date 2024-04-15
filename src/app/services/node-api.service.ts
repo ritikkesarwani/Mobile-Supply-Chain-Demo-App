@@ -18,4 +18,8 @@ export class NodeApiService {
   getAllOrganization(id: any) {
     return this.http.get(`https://testnode.propelapps.com/EBS/23A/getInventoryOrganizationsTable/${id}`, {observe:'response'});
   }
+
+  fetchAllByUrl(url: string) {
+    return this.http.get(url, {observe: 'response'});
+  }
 }

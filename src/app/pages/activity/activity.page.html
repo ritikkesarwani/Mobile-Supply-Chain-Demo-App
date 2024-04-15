@@ -1,13 +1,179 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>activity</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-text-center">Activity Screen</ion-title>
+    <ion-button slot="secondary" *ngIf="syncAgain" (click)="onSyncAgain()">
+      <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
+    </ion-button>
+    <ion-button slot="end" (click)="onLogout()">
+      <ion-icon name="exit-outline"></ion-icon>
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">activity</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <ion-list *ngIf="isOrgLoaded === true && isRespLoaded === true">
+
+    <ion-item>
+      <ion-card class="new-border slideIn shadow">
+        <ion-row>
+          <ion-col size="1" class="icon-position">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          </ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-col size="11">
+                <p class="success">Login successful [Logged In]</p>
+                <p class="success">Assigned Responsibilities:</p>
+                <p class="success" *ngFor="let resp of responsibilities">{{resp}}</p>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadSubInventoryStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadSubInventoryStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Sub Inventories</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadSubInventoryMessage }}</p>
+          <p>{{ loadSubInventoryStatus? "Loading ...": "Loaded" + " " + subInventories }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadDocsForReceivingStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadDocsForReceivingStatus" name="list-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Docs for Receiving</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadDocsForReceiving }}</p>
+          <p>{{ loadDocsForReceivingStatus? "Loading ...": "Loaded" + " " + docs }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadGlPeriodStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadGlPeriodStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Gl Periods</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadGlPeriodsMessage }}</p>
+          <p>{{ loadGlPeriodStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadPurchasingPeriodsStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadPurchasingPeriodsStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Purchasing Periods</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadPurchasingPeriodsMessage }}</p>
+          <p>{{ loadPurchasingPeriodsStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadReasonsStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadReasonsStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Reasons</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadReasonsMessage }}</p>
+          <p>{{ loadReasonsStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadLocatorsStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadLocatorsStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Locators</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadLocatorsMessage }}</p>
+          <p>{{ loadLocatorsStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadRevisionsStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadRevisionsStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>Revisions</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadRevisionsMessage }}</p>
+          <p>{{ loadRevisionsStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+    <ion-item>
+      <ion-thumbnail>
+        <ion-spinner *ngIf="loadUomStatus" name="bubbles"></ion-spinner>
+        <ion-icon *ngIf="!loadUomStatus" name="cube-outline"></ion-icon>
+      </ion-thumbnail>
+      <ion-card>
+
+        <ion-card-header>
+          <ion-card-title>UOM</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p>Status: {{ loadUomMessage }}</p>
+          <p>{{ loadUomStatus? "Loading ...": "Loaded" }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+
+  </ion-list>
 </ion-content>

@@ -82,6 +82,8 @@ export class DatabaseService {
     return this.db.executeSql(`DROP TABLE IF EXISTS ${table}`, [])
   }
 
+  
+
   // Get value from storage
   async getValue(key: string) {
     return this.storage.get(key);
@@ -92,5 +94,8 @@ export class DatabaseService {
     return this.storage.set(key, value);
   }
 
+  async clearStorage() {
+    return this.storage.clear();
+  }
 }
 

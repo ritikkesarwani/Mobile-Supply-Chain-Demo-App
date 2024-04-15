@@ -3,6 +3,7 @@ import { NavController, ToastController } from '@ionic/angular';
 import { NodeApiService } from 'src/app/services/node-api.service';
 import { TableNames } from '../constants/constants';
 import { DatabaseService } from './database.service';
+import { UiService } from './ui.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +20,17 @@ export class LoginService {
     private toastController: ToastController,
     private nodeApiService: NodeApiService,
     private navCtrl: NavController,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private uiService: UiService
   ) { }
 
   async login(username: string, password: string) {
     if (!username || username.trim() === '') {
-      await this.presentToast('Error', 'Please enter username');
+      await this.uiService.presentToast('', 'Please enter the username')
       return;
     }
     if (!password || password.trim() === '') {
-      await this.presentToast('Error', 'Please enter your password');
+      await this.uiService.presentToast('', 'Please enter the password')
       return;
     }
 
@@ -42,7 +44,8 @@ export class LoginService {
         const loginData = data.data;
 
         if (loginData[0].STATUS === "0") {
-          await this.presentToast('Error', loginData[0].ERROR);
+          await this.uiService.presentToast('', loginData[0].ERROR)
+
         } else {
           this.isLoggedIn = true;
           let responsibilities: any[] = [];
@@ -59,12 +62,7 @@ export class LoginService {
             defaultOrgId = loginData.DEFAULT_ORG_ID;
           });
           
-
           await this.insertUserData([username, password]);
-
-
-
-
 
           await this.handleLoginSuccess(loginData, username, password, responsibilities, defaultOrgId);
           const loginValue = this.databaseService.getValue('loginData')
@@ -95,7 +93,6 @@ export class LoginService {
 
     await this.databaseService.createTable(query, TableNames.LOGIN);
   }
-
 
   async handleLoginSuccess(loginData: any[], username: string, password: string, responsibilities: any[], defaultOrgId:any) {
 
