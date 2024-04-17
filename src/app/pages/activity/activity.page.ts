@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { TableNames } from 'src/app/constants/constants';
 import { DatabaseService } from 'src/app/services/database.service';
 import { MasterConfigService } from 'src/app/services/master-config.service';
+import { SharedService } from 'src/app/services/shared.service';
+import { TransactionService } from 'src/app/services/transaction.service';
 import { UiService } from 'src/app/services/ui.service';
 
 @Component({
@@ -58,7 +61,9 @@ export class ActivityPage implements OnInit {
     private databaseService: DatabaseService,
     private uiService: UiService,
     private masterConfigService :MasterConfigService,
-    private route:Router
+    private transactionService: TransactionService,
+    private route:Router,
+    private sharedService: SharedService
   ) { }
 
   async onLogout() {
@@ -89,6 +94,8 @@ export class ActivityPage implements OnInit {
       this.uiService.presentAlert('Error', 'No Responsibilities data available');
       this.onLogout();
     }
+    await this.sharedService.createTransactionHistoryTable(TableNames.TRANSACTIONS);
+
   }
 
   async ionViewDidEnter() {
@@ -97,25 +104,24 @@ export class ActivityPage implements OnInit {
         const identifier = await this.masterConfigService.masterConfigApiCall(this.defaultOrgId, this.organisation);
         console.log(identifier,'identifer')
         const LoadTransaction = identifier.every((data: any) => data === true);
-       // console.log(LoadTransaction,'loadtransaction')
-      //  let LoadTransaction = true;
-        if(LoadTransaction){
-          this.navigateToDashboard()
+        if (LoadTransaction) {
+          const transactionStatus = await this.transactionService.getTransactionalData(this.defaultOrgId, this.organisation);
+          const forwardToDashboard = transactionStatus.every((data: any) => data === true);
+          if (forwardToDashboard) {
+            this.navigateToDashboard();
+          } else {
+            this.syncAgain = true
+          }
+        } else {
+          this.syncAgain = true
         }
-
-
+      } catch (error) {
+        console.error('ion view', error);
       }
-      catch (error){
-        console.log(error)
-      }
-
-    }
-    else{
+    } else {
       this.uiService.presentToast('Error', 'No network available');
       this.syncAgain = true
-    }
-
-
+    } 
   }
 
   async onSyncAgain() {
@@ -131,7 +137,4 @@ export class ActivityPage implements OnInit {
       this.syncAgain = true
     }
   }
-
- 
-
 }

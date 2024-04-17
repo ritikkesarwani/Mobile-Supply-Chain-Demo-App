@@ -15,18 +15,27 @@ const routes: Routes = [
   {
     path: 'org-list',
     loadChildren: () => import('./pages/org-list/org-list.module').then(m => m.OrgListPageModule)
-  },  {
+  },
+  {
     path: 'activity',
     loadChildren: () => import('./pages/activity/activity.module').then( m => m.ActivityPageModule)
   },
   {
-    path: 'good-receipt',
-    loadChildren: () => import('./pages/good-receipt/good-receipt.module').then( m => m.GoodReceiptPageModule)
-  },
-  {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },  {
+    path: 'orders-list',
+    loadChildren: () => import('./pages/good-receipt/orders-list/orders-list.module').then( m => m.OrdersListPageModule)
   },
+  {
+    path: 'order-items',
+    loadChildren: () => import('./pages/good-receipt/order-items/order-items.module').then( m => m.OrderItemsPageModule)
+  },
+  {
+    path: 'order-item-details',
+    loadChildren: () => import('./pages/good-receipt/order-item-details/order-item-details.module').then( m => m.OrderItemDetailsPageModule)
+  },
+
 
  
 

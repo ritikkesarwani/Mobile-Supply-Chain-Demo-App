@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { GoodReceiptPageRoutingModule } from './good-receipt-routing.module';
+import { OrderItemsPageRoutingModule } from './order-items-routing.module';
 
-import { GoodReceiptPage } from './good-receipt.page';
+import { OrderItemsPage } from './order-items.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    GoodReceiptPageRoutingModule
+    OrderItemsPageRoutingModule
   ],
-  declarations: [GoodReceiptPage]
+  declarations: [OrderItemsPage]
 })
-export class GoodReceiptPageModule {}
+export class OrderItemsPageModule {}
