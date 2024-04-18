@@ -56,7 +56,8 @@ export class DashboardPage implements OnInit {
 
   goToGoodsReceipt() {
     // Navigate to GoodsReceipt page
-    this.navCtrl.navigateForward('orders-list');
+    this.route.navigate(['/orders-list']);
+    //this.navCtrl.navigateForward('/orders-list');
   }
 
   goToTransHistory() {
