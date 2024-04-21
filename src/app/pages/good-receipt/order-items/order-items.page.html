@@ -1,13 +1,53 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>order-items</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back" (click)="goToList()"></ion-icon>
+      <ion-icon name="home" defaultHref="/dashboard" class="icon"></ion-icon>
+    </ion-buttons>
+    <ion-title class="order-title">Order# {{ Orders[0]?.PoNumber }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">order-items</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-card class="order-card" *ngIf="Orders.length > 0">
+    <ion-card-header *ngFor="let order of Orders; let i = index" class="order-card-header"
+      [ngClass]="{ 'first-order': i === 0 }">
+      <ion-grid *ngIf="i==0">
+        <ion-row class="order-details">
+          <ion-col size="6" class="ion-text-start">
+            <ion-label class="order-type">{{ order.PoType }}</ion-label>
+            <ion-label class="vendor-name">{{ order.VendorName }}</ion-label>
+          </ion-col>
+          <ion-col size="6" class="ion-text-end">
+            <ion-label class="item-count" color="danger">{{ Orders.length }} items</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row class="requestor">
+          <ion-col size="12" class="ion-text-center">
+            <ion-label color="primary">{{ order.Requestor }}</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card class="order-item-card full-width-card">
+    <ion-list *ngFor="let order of Orders; let i = index" class="order-list" lines="none">
+      <ion-item class="order-item">
+        <ion-card-header>
+          <ion-label color="primary">{{ i+1 }}.{{ order.ItemNumber }}</ion-label>
+          <ion-label>{{ order.ItemDesc }}</ion-label>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-label>Shipment: {{ order.ShipmentLineNum }}</ion-label>
+          <ion-label>Delivery Date: {{ order.DeliveryDate }}</ion-label>
+          <ion-label>Quantity Ordered: {{ order.QtyOrdered }} {{ order.ItemUom }}</ion-label>
+        </ion-card-content>
+      </ion-item>
+      <ion-button slot="end" (click)="goToItemDetails(order)">
+        <ion-icon name="chevron-forward" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-list>
+    
+  </ion-card>
 </ion-content>

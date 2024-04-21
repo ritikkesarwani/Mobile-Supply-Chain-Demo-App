@@ -23,7 +23,8 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./pages/dashboard/dashboard.module').then( m => m.DashboardPageModule)
-  },  {
+  },
+  {
     path: 'orders-list',
     loadChildren: () => import('./pages/good-receipt/orders-list/orders-list.module').then( m => m.OrdersListPageModule)
   },
@@ -35,11 +36,6 @@ const routes: Routes = [
     path: 'order-item-details',
     loadChildren: () => import('./pages/good-receipt/order-item-details/order-item-details.module').then( m => m.OrderItemDetailsPageModule)
   },
-
-
- 
-
-
 ];
 
 @NgModule({

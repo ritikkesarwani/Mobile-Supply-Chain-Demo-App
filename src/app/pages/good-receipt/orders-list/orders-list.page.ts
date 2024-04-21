@@ -1,5 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { TableNames } from 'src/app/constants/constants';
 import { DatabaseService } from 'src/app/services/database.service';
@@ -16,7 +17,7 @@ export class OrdersListPage implements OnInit {
   searchText: string = '';
   fullDocs: any[] = [];
 
-  constructor(private navCtrl: NavController, private databaseService: DatabaseService) { }
+  constructor(private navCtrl: NavController, private databaseService: DatabaseService, private router: Router) { }
 
   // Fetch receipt purchase order items from the database
   async ngOnInit() {
@@ -118,6 +119,20 @@ export class OrdersListPage implements OnInit {
   onClearSearch() {
     this.searchText = '';
     this.filteredReceipts = [...this.receipts];
+  }
+
+   // Function to navigate to ItemsDetailsPage with selected PoHeaderId
+  //  goToItems(PoNumber: string) {
+  //   this.router.navigate(['/order-items', PoNumber]);
+  // }
+
+  async goToItems(doc: any) {
+    await this.databaseService.setValue('selectedPo', doc);
+    this.navCtrl.navigateForward('/order-items', {
+      queryParams: {
+        doc
+      } 
+    });
   }
 
   // Navigate to the dashboard page

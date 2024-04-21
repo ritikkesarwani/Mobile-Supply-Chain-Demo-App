@@ -1,0 +1,63 @@
+ion-header {
+    background-color: #08668d;
+  }
+  
+  ion-toolbar {
+    --background: #08668d;
+    color: white;
+  }
+  
+  .order-title {
+    margin-left: 50px;
+  }
+  
+  .order-card {
+    margin: 10px;
+    height: 120px; /* Set a fixed height for the card */
+  }
+  
+  .order-card-header {
+    padding: 10px;
+  }
+  
+  .first-order {
+    background-color: lightgray;
+  }
+  
+  .order-item {
+    padding: 10px;
+  }
+  
+  .order-item-card {
+    margin: 10px;
+  }
+  
+  .full-width-card {
+    margin: 10px;
+    width: calc(100% - 20px);
+  }
+  
+  .order-details {
+    padding-bottom: 10px;
+  }
+  
+  .order-type {
+    font-weight: bold;
+  }
+  
+  .vendor-name {
+    font-size: 1.1em;
+  }
+  
+  .requestor {
+    margin-top: 10px;
+  }
+  
+  .item-count {
+    font-weight: bold;
+  }
+  
+  .icon {
+    margin-left: 10px;
+  }
+  

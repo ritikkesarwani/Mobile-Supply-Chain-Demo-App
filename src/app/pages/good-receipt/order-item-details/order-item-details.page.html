@@ -1,13 +1,38 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>order-item-details</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons>
+      <ion-back-button slot="start" defaultHref="order-items"></ion-back-button>
+      <ion-title>PO#{{ item.PoNumber }}</ion-title>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">order-item-details</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ item.ItemNumber }}</ion-card-title>
+      <ion-card-subtitle>{{ item.ItemDesc }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <p>Qty Order: {{ item.QtyOrdered }} {{ item.ItemUom }}</p>
+        </ion-item>
+        <ion-item>
+          <p>Qty Remaining: {{ item.QtyRemaining }} {{ item.ItemUom }}</p>
+        </ion-item>
+        <ion-item>
+          <p>Quantity Received: {{ item.QtyOrdered - item.QtyRemaining }} {{ item.ItemUom }}</p>
+        </ion-item>
+        <ion-item>
+          <p>Shipment #{{ item.PoShipmentNumber }}</p>
+        </ion-item>
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-button expand="block">
+    PRINT
+  </ion-button>
 </ion-content>
