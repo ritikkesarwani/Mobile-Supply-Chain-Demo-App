@@ -15,9 +15,7 @@ import { UiService } from 'src/app/services/ui.service';
 })
 export class ActivityPage implements OnInit {
 
-
   responsibilities: any;
-
   organisation: any;
   isOrgLoaded: boolean = false;
   defaultOrgId: any;
@@ -60,9 +58,9 @@ export class ActivityPage implements OnInit {
     private navCtrl: NavController,
     private databaseService: DatabaseService,
     private uiService: UiService,
-    private masterConfigService :MasterConfigService,
+    private masterConfigService: MasterConfigService,
     private transactionService: TransactionService,
-    private route:Router,
+    private route: Router,
     private sharedService: SharedService
   ) { }
 
@@ -70,7 +68,6 @@ export class ActivityPage implements OnInit {
     this.LoadTransaction = false;
     await this.databaseService.clearStorage();
     this.route.navigate(['/login'])
-
   }
 
   async ngOnInit() {
@@ -99,10 +96,10 @@ export class ActivityPage implements OnInit {
   }
 
   async ionViewDidEnter() {
-    if(this.isOnline){
-      try{
+    if (this.isOnline) {
+      try {
         const identifier = await this.masterConfigService.masterConfigApiCall(this.defaultOrgId, this.organisation);
-        console.log(identifier,'identifer')
+        console.log(identifier, 'identifer')
         const LoadTransaction = identifier.every((data: any) => data === true);
         if (LoadTransaction) {
           const transactionStatus = await this.transactionService.getTransactionalData(this.defaultOrgId, this.organisation);
@@ -121,14 +118,13 @@ export class ActivityPage implements OnInit {
     } else {
       this.uiService.presentToast('Error', 'No network available');
       this.syncAgain = true
-    } 
+    }
   }
 
   async onSyncAgain() {
     this.ionViewDidEnter();
     this.syncAgain = false;
   }
-  
 
   navigateToDashboard() {
     if (this.success) {
@@ -137,4 +133,5 @@ export class ActivityPage implements OnInit {
       this.syncAgain = true
     }
   }
+
 }

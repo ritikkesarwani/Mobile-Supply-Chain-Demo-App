@@ -15,7 +15,6 @@ export class LoginService {
 
   private loaders: HTMLIonLoadingElement[] = [];
 
-
   constructor(
     private toastController: ToastController,
     private nodeApiService: NodeApiService,
@@ -56,12 +55,12 @@ export class LoginService {
             return data.DEFAULT_ORG_ID !== "";
           });
 
-          filterLoginData.forEach((loginData:any) => {
+          filterLoginData.forEach((loginData: any) => {
             const responsibility = (loginData.RESPONSIBILITY as string).toLowerCase().trim();
             responsibilities.push(responsibility);
             defaultOrgId = loginData.DEFAULT_ORG_ID;
           });
-          
+
           await this.insertUserData([username, password]);
 
           await this.handleLoginSuccess(loginData, username, password, responsibilities, defaultOrgId);
@@ -94,19 +93,14 @@ export class LoginService {
     await this.databaseService.createTable(query, TableNames.LOGIN);
   }
 
-  async handleLoginSuccess(loginData: any[], username: string, password: string, responsibilities: any[], defaultOrgId:any) {
-
-    console.log(responsibilities,'this is responsibilities');
-    console.log(defaultOrgId, 'this is default org id');
-    console.log(loginData, 'this is loginData');
-    console.log(username, 'this is username');
-    console.log(password, 'password');
+  async handleLoginSuccess(loginData: any[], username: string, password: string, responsibilities: any[], defaultOrgId: any) {
 
     await this.databaseService.setValue('orgId', defaultOrgId);
     await this.databaseService.setValue('responsibilities', responsibilities);
     await this.databaseService.setValue('loginData', loginData);
     await this.databaseService.setValue('username', username);
     await this.databaseService.setValue('password', password);
+
   }
 
   async presentToast(header: string, message: string) {

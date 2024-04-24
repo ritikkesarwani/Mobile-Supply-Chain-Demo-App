@@ -32,6 +32,11 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+
+  <app-sub-inv *ngIf="item.DestinationType==='Inventory'" [subInv]="subInvCode"
+  (openSubInv)="goToCommonListPage('SUB-INV')" (clearSubInv)="onSubInvEdit()"
+  (subInvChange)="onSubInvChange($event)"></app-sub-inv>
+  
   <ion-button expand="block">
     PRINT
   </ion-button>

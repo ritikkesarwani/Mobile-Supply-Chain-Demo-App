@@ -35,7 +35,12 @@ const routes: Routes = [
   {
     path: 'order-item-details',
     loadChildren: () => import('./pages/good-receipt/order-item-details/order-item-details.module').then( m => m.OrderItemDetailsPageModule)
+  },  {
+    path: 'common-shared-list',
+    loadChildren: () => import('./common-shared-list/common-shared-list.module').then( m => m.CommonSharedListPageModule)
   },
+
+  
 ];
 
 @NgModule({

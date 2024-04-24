@@ -1,0 +1,47 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ receivedItemMsg[0] === "UOM" ? "Uom Conversion" :
+        receivedItemMsg[0] === "LOT-CONTROLLED" ? (receivedItemMsg[2]?.ItemNumber + "-Lots") :
+        receivedItemMsg[0] === "LOCATOR" ? "Locators" :
+        receivedItemMsg[0] === "SUB-INV" ? "Sub-Inventory" :
+        receivedItemMsg[0] === "SERIAL-CONTROLLED" ? (receivedItemMsg[2]?.ItemNumber + "-Serial") :
+        receivedItemMsg[0] === "REV" ? "Item Revision" : "" }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ng-container [ngTemplateOutlet]="templateIdentifier"></ng-container>
+  <ng-template #uomTemplate>
+    <ion-list>
+      <ion-item *ngFor="let option of commonList" (click)="onModalClose(option.BaseUOMCode)">
+        <ion-label>
+          <label for="org-{{option.UOMConvDesc}}">Conv. UOM:{{ option.UOMConvDesc }}</label>
+          <br />
+          <label for="org-{{option.ConversionRate}}">Conv. Rate:{{ option.ConversionRate }}</label>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+  <ng-template #subInvTemplate>
+    <ion-list>
+      <ion-item>
+        <ion-searchbar placeholder="Search" (ionInput)="onSearch($event)" (ionChange)="onSearch($event)"
+          (ionClear)="onClearSearch($event)"></ion-searchbar>
+      </ion-item>
+      <ion-item *ngFor="let option of commonList" (click)="onModalClose(option.SubInventoryCode)">
+        <ion-label>
+          <label for="org-{{option.SubInventoryCode}}">{{ option.SubInventoryCode }}</label>
+          <br />
+          <label for="org-{{option.SubInventoryDesc}}">{{ option.SubInventoryDesc }}</label>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+</ion-content>

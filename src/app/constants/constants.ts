@@ -65,3 +65,24 @@ export enum TransactionType {
     DELTA_SYNC = "DELTA_SYNC",
   }
   
+
+  export enum Color {
+    PRIMARY = "primary",
+    SECONDARY = "secondary",
+    TERTIARY = "tertiary",
+    SUCCESS = "success",
+    WARNING = "warning",
+    ERROR = "danger",
+    LIGHT = "light",
+    MEDIUM = "medium",
+    DARK = "dark",
+  }
+  
+  export enum MESSAGES {
+    SUCCESS = "Success",
+    FAILED = "Failed",
+    ERROR = "Error",
+    UNAUTHORIZED = "Unauthorized",
+    TIMEOUT = "Timeout",
+    NO_INTERNET = "Please check your internet connection and try again.",
+  }
