@@ -56,7 +56,7 @@ export class CommonSharedListPage implements OnInit {
 
   async ngOnInit() {
     this.selectedOrg = await this.databaseService.getValue('selectedOrg');
-    this.selectedOrgId = this.selectedOrg.InventoryOrgId_PK;
+    this.selectedOrgId = this.selectedOrg.InventoryOrgId;
     const section = this.fb.group({
       lotQuantity: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
       lotCode: ['', Validators.required],

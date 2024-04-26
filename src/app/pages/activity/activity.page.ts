@@ -99,7 +99,6 @@ export class ActivityPage implements OnInit {
     if (this.isOnline) {
       try {
         const identifier = await this.masterConfigService.masterConfigApiCall(this.defaultOrgId, this.organisation);
-        console.log(identifier, 'identifer')
         const LoadTransaction = identifier.every((data: any) => data === true);
         if (LoadTransaction) {
           const transactionStatus = await this.transactionService.getTransactionalData(this.defaultOrgId, this.organisation);

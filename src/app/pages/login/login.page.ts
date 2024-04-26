@@ -27,7 +27,6 @@ export class LoginPage implements OnInit {
 
   async login() {
     if (this.isOnline) {
-      console.log(this.isOnline);
       this.uiService.getCustomLoader('Please wait')
 
       const username = this.loginForm.value.username;

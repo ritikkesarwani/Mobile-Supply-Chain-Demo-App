@@ -18,9 +18,6 @@ export class NetworkService {
   // Method to get current network status
   async getCurrentNetworkStatus() {
     this.networkValue =  await Network.getStatus();
-    console.log(this.networkValue);
-    console.log(this.networkValue.connected);
-
     return this.networkValue.connected;
   }
 }

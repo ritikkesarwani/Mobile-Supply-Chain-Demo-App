@@ -27,13 +27,11 @@ export class OrgListPage implements OnInit {
 
   async loadAllOrganizations() {
     let orgId = await this.databaseService.getValue('orgId');
-    console.log(orgId, "ritik");
 
     if (!this.allOrganization) {
       this.nodeApiService.getAllOrganization(orgId).subscribe({
         next: async (data: any) => {
-          console.log(data.status);
-
+          
           if (data && data.status === 200) {
             const allOrgData = data.body;
 
@@ -49,8 +47,6 @@ export class OrgListPage implements OnInit {
 
             this.organisations = orgList;
             this.filteredOrganisations = orgList;
-
-            console.log(this.organisations);
 
           } else {
             console.log("Error from the server");
