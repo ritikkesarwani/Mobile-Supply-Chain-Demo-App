@@ -107,15 +107,15 @@ export class SharedService {
     if (name === RESPONSIBILITIES.GL_PERIODS || name === RESPONSIBILITIES.INVENTORY_PERIODS || name === RESPONSIBILITIES.PURCHASING_PERIODS) {
       return `${defaultOrgId}`
     } else if (name === RESPONSIBILITIES.REVISIONS || name === RESPONSIBILITIES.UOM || name === RESPONSIBILITIES.LOTS) {
-      return `${organisation.InventoryOrgId_PK}/""`
+      return `${organisation.InventoryOrgId}/""`
     } else if (name === RESPONSIBILITIES.SUB_INVENTORY || name === RESPONSIBILITIES.DOCS4RECEIVING) {
-      return `${organisation.InventoryOrgId_PK}/""/"Y"`
+      return `${organisation.InventoryOrgId}/""/"Y"`
     } else if (name === RESPONSIBILITIES.LOCATORS) {
-      return `${organisation.InventoryOrgId_PK}/""/""`
+      return `${organisation.InventoryOrgId}/""/""`
     } else if (name === RESPONSIBILITIES.SERIALS) {
-      return `${organisation.InventoryOrgId_PK}/""/""/""`
+      return `${organisation.InventoryOrgId}/""/""/""`
     } else if (name === TransactionType.DELTA_SYNC) {
-      return `${organisation.InventoryOrgId_PK}/"${""}"/"N"`
+      return `${organisation.InventoryOrgId}/"${""}"/"N"`
     } else {
       return ''
     }
