@@ -66,7 +66,7 @@ export class UiService {
       spinner: 'circles',
       message: message,
       showBackdrop: true,
-      duration: 900,
+      duration: 1300,
       translucent: true
     });
     loader.then((loaderResponse) => {

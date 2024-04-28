@@ -35,7 +35,7 @@ export class TransactionService {
         } catch (error) {
           console.error(`Error getting metadata for ${api.name}: `, error);
         } finally {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 200));
         }
       } else if (api.message == TypeOfApi.GET_DATA) {
         try {
@@ -45,7 +45,7 @@ export class TransactionService {
         } catch (error) {
           console.error(`Error getting data for ${api.name}: `, error);
         } finally {
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise(resolve => setTimeout(resolve, 200));
         }
       }
     }

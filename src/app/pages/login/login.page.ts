@@ -28,13 +28,11 @@ export class LoginPage implements OnInit {
   async login() {
     if (this.isOnline) {
       this.uiService.getCustomLoader('Please wait')
-
       const username = this.loginForm.value.username;
       const password = this.loginForm.value.password;
       this.loginService.login(username, password);
     } else {
       try {
-
         this.uiService.presentToast('Error', 'No Internet Connection');
       }
       catch (error) {
