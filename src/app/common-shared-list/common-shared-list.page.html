@@ -44,4 +44,19 @@
       </ion-item>
     </ion-list>
   </ng-template>
+  <ng-template #locTemplate>
+    <ion-list>
+      <ion-item>
+        <ion-item>
+          <ion-searchbar placeholder="Search" (ionInput)="onSearchLoc($event)" (ionChange)="onSearchLoc($event)"
+            (ionClear)="onClearLocSearch($event)"></ion-searchbar>
+        </ion-item>
+      </ion-item>
+      <ion-item *ngFor="let option of commonList" (click)="onModalClose(option.Locator)">
+        <ion-label>
+          <label for="org-{{option.Locator}}">{{ option.Locator }}</label>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>

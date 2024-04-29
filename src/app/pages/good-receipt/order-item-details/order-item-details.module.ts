@@ -7,7 +7,9 @@ import { IonicModule } from '@ionic/angular';
 import { OrderItemDetailsPageRoutingModule } from './order-item-details-routing.module';
 import { SubInvPage } from 'src/app/shared-components/sub-inv/sub-inv.page';
 
+
 import { OrderItemDetailsPage } from './order-item-details.page';
+import { LocatorPage } from 'src/app/shared-components/locator/locator.page';
 
 @NgModule({
   imports: [
@@ -16,6 +18,6 @@ import { OrderItemDetailsPage } from './order-item-details.page';
     IonicModule,
     OrderItemDetailsPageRoutingModule
   ],
-  declarations: [OrderItemDetailsPage,SubInvPage]
+  declarations: [OrderItemDetailsPage,SubInvPage,LocatorPage]
 })
 export class OrderItemDetailsPageModule {}

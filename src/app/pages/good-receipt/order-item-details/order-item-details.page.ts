@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { CommonSharedListPage } from 'src/app/common-shared-list/common-shared-list.page';
 import { UiService } from 'src/app/services/ui.service';
@@ -40,16 +40,24 @@ export class OrderItemDetailsPage implements OnInit {
     private modalController: ModalController,
     private uiProviderService: UiService,
     private activatedRoute: ActivatedRoute,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private router: Router
   ) { }
 
   async ngOnInit() {
-    // this.activatedRoute.queryParams.subscribe((data) => {
-    //   this.item = data['item'];
-    //   this.subInvCode = data['inventory'];
-  
+    this.activatedRoute.queryParams.subscribe((data) => {
+      this.item = data['item'];
+      this.subInvCode = data['inventory'];
+    });
+    this.item = await this.databaseService.getValue('selectedItem');
+    this.loadItemsData();
+  }
 
-    // });
+  async ionViewDidEnter() {
+    this.activatedRoute.queryParams.subscribe((data) => {
+      this.item = data['item'];
+      this.subInvCode = data['inventory'];
+    });
     this.item = await this.databaseService.getValue('selectedItem');
     this.loadItemsData();
   }
@@ -93,6 +101,8 @@ export class OrderItemDetailsPage implements OnInit {
       }
     });
 
+    console.log(this.subInvCode)
+
     await modal.present();
   }
 
@@ -118,4 +128,17 @@ export class OrderItemDetailsPage implements OnInit {
   onSubInvChange(subInv: any) {
     this.subInvCode = subInv;
   }
+
+  onLocatorChange(locator: any) {
+    this.locatorCode = locator;
+  }
+
+  onLocatorEdit() {
+    this.locatorCode = ""
+  }
+
+  goToBack() {
+    this.router.navigate(['/order-items']);
+  }
+
 }

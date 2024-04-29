@@ -1,12 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-buttons>
-      <ion-back-button slot="start" defaultHref="order-items"></ion-back-button>
-      <ion-title>PO#{{ item.PoNumber }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-icon name="chevron-back" (click)="goToBack()"></ion-icon>
+      <ion-icon name="home" defaultHref="/dashboard" class="icon"></ion-icon>
     </ion-buttons>
+    <ion-title>Order#{{ item.PoNumber }}</ion-title>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content [fullscreen]="true">
   <ion-card>
@@ -34,9 +34,14 @@
   </ion-card>
 
   <app-sub-inv *ngIf="item.DestinationType==='Inventory'" [subInv]="subInvCode"
-  (openSubInv)="goToCommonListPage('SUB-INV')" (clearSubInv)="onSubInvEdit()"
-  (subInvChange)="onSubInvChange($event)"></app-sub-inv>
-  
+    (openSubInv)="goToCommonListPage('SUB-INV')" (clearSubInv)="onSubInvEdit()"
+    (subInvChange)="onSubInvChange($event)"></app-sub-inv>
+
+
+  <app-locator *ngIf="item.DestinationType==='Inventory'" [locator]="locatorCode"
+    (openLocator)="goToCommonListPage('LOCATOR')" (clearLocator)="onLocatorEdit()"
+    (locatorChanged)="onLocatorChange($event)"></app-locator>
+
   <ion-button expand="block">
     PRINT
   </ion-button>
