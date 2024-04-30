@@ -6,6 +6,7 @@ import { SharedService } from '../services/shared.service';
 import { NodeApiService } from '../services/node-api.service';
 import { UiService } from '../services/ui.service';
 import { DatabaseService } from '../services/database.service';
+import { LotListPage } from '../pages/lot-list/lot-list.page';
 
 @Component({
   selector: 'app-common-shared-list',
@@ -39,6 +40,7 @@ export class CommonSharedListPage implements OnInit {
   maxTotalQuantity: number = 0;
   selectedOrg: any;
   serialList: any[] = [];
+
 
   constructor(
     private modalController: ModalController,
@@ -237,23 +239,23 @@ export class CommonSharedListPage implements OnInit {
   // throw new Error('Method not implemented.');
   // }
 
-  // async onLotSelect() {
-  //   const modal = await this.modalController.create({
-  //     component: LotListPage,
-  //     componentProps: {
-  //       data: [this.receivedItemMsg[2]?.ItemNumber],
-  //     },
-  //   });
+  async onLotSelect() {
+    const modal = await this.modalController.create({
+      component: LotListPage,
+      componentProps: {
+        data: [this.receivedItemMsg[2]?.ItemNumber],
+      },
+    });
 
-  //   modal.onDidDismiss().then((dataReturned: any) => {
-  //     if (dataReturned.data) {
-  //       let value = dataReturned.data;
-  //       const lastSection = this.sections[this.sections.length - 1];
-  //       lastSection.get('lotCode')?.setValue(value.data);
-  //     }
-  //   });
-  //   return await modal.present();
-  // }
+    modal.onDidDismiss().then((dataReturned: any) => {
+      if (dataReturned.data) {
+        let value = dataReturned.data;
+        const lastSection = this.sections[this.sections.length - 1];
+        lastSection.get('lotCode')?.setValue(value.data);
+      }
+    });
+    return await modal.present();
+  }
 
 
 

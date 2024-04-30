@@ -35,9 +35,17 @@ const routes: Routes = [
   {
     path: 'order-item-details',
     loadChildren: () => import('./pages/good-receipt/order-item-details/order-item-details.module').then( m => m.OrderItemDetailsPageModule)
-  },  {
+  },
+  {
     path: 'common-shared-list',
     loadChildren: () => import('./common-shared-list/common-shared-list.module').then( m => m.CommonSharedListPageModule)
+  },
+  {
+    path: 'lot-list',
+    loadChildren: () => import('./pages/lot-list/lot-list.module').then( m => m.LotListPageModule)
+  },  {
+    path: 'trans-hist',
+    loadChildren: () => import('./pages/trans-hist/trans-hist.module').then( m => m.TransHistPageModule)
   },
 
   

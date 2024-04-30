@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-serials',
@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SerialsPage implements OnInit {
 
+  @Input() serialData: any[] = [];
+  @Output() openSerial: EventEmitter<any> = new EventEmitter<any>();
   constructor() { }
 
   ngOnInit() {
   }
 
+  onOpenSerial() {
+    this.openSerial.emit();
+  }
 }

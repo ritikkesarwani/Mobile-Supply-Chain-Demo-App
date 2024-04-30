@@ -19,22 +19,32 @@ export class DashboardPage implements OnInit {
 
   constructor(private navCtrl: NavController,private databaseService: DatabaseService,public alertController: AlertController, private route: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Fetch and update totalReceipts and totalTrans values from service or API call
     // this.totalReceipts = ...
-    // this.totalTrans = ...
+    // this.totalTrans = ...]
+    try {
+      const trans_data = await this.databaseService.getDataFromTable(TableNames.TRANSACTIONS)
+      if (trans_data.rows.length > 0) {
+        this.totalTrans = trans_data.rows.length;
+      } else {
+        this.totalTrans = '0';
+      }
+    } catch (error) {
+      this.totalTrans = '0';
+    }
   }
 
   async ionViewDidEnter() {
     try {
-      const transactionData = await this.databaseService.getDataFromTable(TableNames.TRANSACTIONS);
-      if (transactionData.rows.length > 0) {
-        this.totalTransactions = transactionData.rows.length.toString();
+      const trans_data = await this.databaseService.getDataFromTable(TableNames.TRANSACTIONS)
+      if (trans_data.rows.length > 0) {
+        this.totalTrans = trans_data.rows.length;
       } else {
-        this.totalTransactions = '0';
+        this.totalTrans = '0';
       }
     } catch (error) {
-      this.totalTransactions = '0';
+      this.totalTrans = '0';
     }
     
     const query = `SELECT PoNumber, PoType, VendorName, LastUpdateDate FROM ${TableNames.DOCS4RECEIVING} 
@@ -62,7 +72,7 @@ export class DashboardPage implements OnInit {
 
   goToTransHistory() {
     // Navigate to TransHistory page
-    this.navCtrl.navigateForward('/trans-history');
+    this.navCtrl.navigateForward('/trans-hist');
   }
   
   async presentAlertConfirm() {

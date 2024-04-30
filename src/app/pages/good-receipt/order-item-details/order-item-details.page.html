@@ -33,16 +33,25 @@
     </ion-card-content>
   </ion-card>
 
+  <app-uom [uomCode]="uomCode" (openUom)="goToCommonListPage('UOM')"
+  (quantityChange)="onQuantityChange($event)"></app-uom>
+
+
   <app-sub-inv *ngIf="item.DestinationType==='Inventory'" [subInv]="subInvCode"
     (openSubInv)="goToCommonListPage('SUB-INV')" (clearSubInv)="onSubInvEdit()"
     (subInvChange)="onSubInvChange($event)"></app-sub-inv>
-
 
   <app-locator *ngIf="item.DestinationType==='Inventory'" [locator]="locatorCode"
     (openLocator)="goToCommonListPage('LOCATOR')" (clearLocator)="onLocatorEdit()"
     (locatorChanged)="onLocatorChange($event)"></app-locator>
 
-  <ion-button expand="block">
-    PRINT
+  <app-lots *ngIf="item.IsLotControlled==='True'" [lotData]="lotData"
+    (openLot)="goToCommonListPage('LOT-CONTROLLED')"></app-lots>
+
+  <app-serials *ngIf="item.IsSerialControlled==='True'" [serialData]="SerialData"
+    (openSerial)="goToCommonListPage('SERIAL-CONTROLLED')"></app-serials>
+
+  <ion-button (click)="UpdateQty()" expand="block">
+    SUBMIT
   </ion-button>
 </ion-content>

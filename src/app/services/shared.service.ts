@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ApiSettings, RESPONSIBILITIES, TableNames, TransactionType } from '../constants/constants';
+import { ApiSettings, MESSAGES, RESPONSIBILITIES, TableNames, TransactionType } from '../constants/constants';
 import { Subscription } from 'rxjs';
 import { DatabaseService } from './database.service';
 import { NodeApiService } from './node-api.service';
 import { UiService } from './ui.service';
+import { formatDate } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,10 @@ export class SharedService {
   constructor(
     private nodeApiService: NodeApiService,
     private uiService: UiService,
-    private databaseService: DatabaseService) { }
+    private databaseService: DatabaseService,
+    private apiService: NodeApiService
+  
+  ) { }
   MetaDataSubscription!: Subscription;
   DataSubscription!: Subscription;
 
@@ -145,6 +149,42 @@ export class SharedService {
     }
   }
 
+  async performDeltaSync(tableName: any, organisation: any) {
+    const params = this.generateParams(TransactionType.DELTA_SYNC, '', organisation);
+    this.apiService.fetchAllByUrl(ApiSettings.DOCS4RECEIVING + params).subscribe({
+      next: async (resp: any) => {
+        if (resp && resp.status === 200) {
+          const columns = Object.keys(resp.body.Docs4Receiving[0])
+          try {
+            const Docs4Receiving = resp.body.Docs4Receiving
+            await Docs4Receiving.forEach(async (element: any) => {
+              try {
+                if (element["Flag"] === 'D' || element.Flag === 'D') {
+                  await this.databaseService.executeCustonQuery(`DELETE FROM ${tableName} WHERE OrderLineId=? AND PoLineLocationId=? AND ShipmentLineId=?`, [element['OrderLineId'], element['PoLineLocationId'], element['ShipmentLineId']]);
+                } else {
+                  await this.databaseService.insertData(`INSERT OR IGNORE INTO ${tableName} (${columns.join(',')}) VALUES (${columns.map(() => '?').join(',')})`, Object.values(element));
+                  const updateQuery = `UPDATE ${tableName} SET QtyOrdered = ?, QtyReceived = ?, QtyRemaining = ? WHERE OrderLineId = ? AND PoLineLocationId = ? AND ShipmentLineId = ?`;
+  
+                  await this.databaseService.executeCustonQuery(updateQuery, [element['QtyOrdered'], element['QtyReceived'], element['QtyRemaining'], element['OrderLineId'], element['PoLineLocationId'], element['ShipmentLineId']]);              
+                }
+              } catch (error) {
+               console.error('error while inserting or update data: ', error); 
+              }
+            })
+            console.log('Docs4Receiving: deltaSync performed successfully')
+          } catch (error) {
+            console.error('error in performDeltaSync: ', error);
+          }
+        } else if (resp && resp.status === 204) {
+          this.uiService.presentToast(MESSAGES.SUCCESS, 'No docs for receiving in delta');
+        } else {
+          console.error('error in performDeltaSync: ', resp);
+        }
+        }, error: (err) => {
+          console.error('error in performDeltaSync: ', err);
+        }
+      })
+  }
 
   async createTableDataCSV(tableName: string, response: any) {
     try {
@@ -265,6 +305,105 @@ export class SharedService {
     await this.databaseService.createTable(createTransactionHistoryTableQuery, table_name);
   }
   
+  buildPayloadFromTransaction(item: any, index: any, selectedOrg: any, userDetails: any) {
+    const requestBody = {
+      id: `part${index + 1}`,
+      path: '/receivingReceiptRequests',
+      operation: 'create',
+      payload: {
+        ReceiptSourceCode: item?.ReceiptSourceCode,
+        OrganizationCode: item?.OrganizationCode,
+        EmployeeId: userDetails.PERSON_ID,
+        BusinessUnitId: selectedOrg?.BusinessUnitId,
+        ReceiptNumber: item?.receiptInfo,
+        BillOfLading: '',
+        FreightCarrierName: '',
+        PackingSlip: '',
+        WaybillAirbillNumber: '',
+        ShipmentNumber: '',
+        ShippedDate: '',
+        VendorSiteId: '',
+        VendorId: parseInt(item?.vendorId),
+        attachments: [],
+        CustomerId: '',
+        InventoryOrgId: selectedOrg?.InventoryOrgId_PK,
+        DeliveryDate: '31-Jan-2024 12:00:00',
+        ResponsibilityId: '20634',
+        UserId: userDetails.USER_ID,
+        DummyReceiptNumber: new Date().getTime(),
+        BusinessUnit: 'Vision Operations',
+        InsertAndProcessFlag: 'true',
+        lines: [
+          {
+            ReceiptSourceCode: item?.ReceiptSourceCode,
+            MobileTransactionId: new Date().getTime(),
+            TransactionType: item?.TransactionType,
+            AutoTransactCode: item.AutoTransactCode,
+            OrganizationCode: item?.OrganizationCode,
+            DocumentNumber: item?.poNumber,
+            DocumentLineNumber: item?.shipLaneNum,
+            ItemNumber: item?.itemNumber,
+            TransactionDate: formatDate(new Date(), "dd-MM-yyyy HH:mm:ss", "en-US"),
+            Quantity: item?.quantityReceived,
+            UnitOfMeasure: item?.unitOfMeasure,
+            SoldtoLegalEntity: item?.SoldtoLegalEntity,
+            SecondaryUnitOfMeasure: item?.SecondaryUnitOfMeasure,
+            ShipmentHeaderId: item?.ShipmentHeaderId,
+            ItemRevision: item?.ItemRevision != null ? item?.ItemRevision : "",
+            POHeaderId: parseInt(item?.poHeaderId),
+            POLineLocationId: parseInt(item?.poLineLocationId),
+            POLineId: parseInt(item?.poLineId),
+            PODistributionId: parseInt(item?.poDistributionId),
+            ReasonName: '',
+            Comments: '',
+            ShipmentLineId: '',
+            transactionAttachments: [],
+            lotItemLots: (item?.lotQuantity && item?.lotQuantity.trim() !== "")
+              ? this.buildLotPayload(item?.lotQuantity, item?.lotCode)
+              : [],
+            serialItemSerials: (item?.serialNumbers && item?.serialNumbers.trim() !== "")
+              ? item?.serialNumbers.split(',').map((serial: any) => ({
+                fromSerial: serial ? serial : "",
+                toSerial: serial ? serial : ""
+              }))
+              : [],
+            lotSerialItemLots: [],
+            ExternalSystemTransactionReference: 'Mobile Transaction',
+            ReceiptAdviceHeaderId: '',
+            ReceiptAdviceLineId: '',
+            TransferOrderHeaderId: '',
+            TransferOrderLineId: '',
+            PoLineLocationId: item?.poLineLocationId,
+            DestinationTypeCode: item?.destinationTypeCode,
+            Subinventory: item?.Subinventory,
+            Locator: item?.Locator,
+            ShipmentNumber: item?.ShipmentNumber,
+            LpnNumber: item?.LpnNumber,
+            OrderLineId: item?.OrderLineId,
+          },
+        ],
+      },
+    };
+    return requestBody;
+  }
+
+  buildLotPayload(lotQuant: any, lotCodes: any) {
+    if (lotQuant != "" || lotQuant != null || lotCodes != "" || lotCodes != null) {
+      const lotNumbers = lotCodes.split(',');
+      const lotQuantities = lotQuant.split(',');
+      const resultArray = lotNumbers.map((lotNumber: any, index: any) => ({
+        GradeCode: '',
+        LotExpirationDate: formatDate(new Date(), "dd-MM-yyyy HH:mm:ss", "en-US"),
+        LotNumber: lotNumber ? lotNumber : "",
+        ParentLotNumber: '',
+        SecondaryTransactionQuantity: '',
+        TransactionQuantity: lotQuantities[index] ? lotQuantities[index] : "",
+      }));
+      return resultArray;
+    }
+    return [];
+
+  }
 
   insertTransaction(item: any, tableName: string) {
     const query = `INSERT INTO ${tableName} (poNumber, titleName, syncStatus, createdTime, quantityReceived, receiptInfo,error,status,shipLaneNum,

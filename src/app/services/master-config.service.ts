@@ -40,7 +40,7 @@ export class MasterConfigService {
         } catch (error) {
           console.error(`metadata ${api.name}`, error)
         } finally {
-          await new Promise(resolve => setTimeout(resolve, 200))
+          await new Promise(resolve => setTimeout(resolve, 100))
         }
       } else if (api.message === TypeOfApi.GET_DATA) {
         try {
@@ -62,7 +62,7 @@ export class MasterConfigService {
         } catch (error) {
           console.error(`config ${api.name}`, error)
         } finally {
-          await new Promise(resolve => setTimeout(resolve, 200))
+          await new Promise(resolve => setTimeout(resolve, 100))
         }
       } else if (api.message === TypeOfApi.GET_DATA) {
         try {

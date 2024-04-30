@@ -1,13 +1,21 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>lots</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-list>
+  <ion-row>
+    <ion-item>
+      <ion-col size="4">
+        <ion-label>Lot</ion-label>
+      </ion-col>
+      <ion-col size="4" class="ion-text-center">
+        <ion-item>
+          <ion-input readonly="true"
+            value="{{lotData.length>0?(lotData.length+' lot selected'):'Sel Lot'}}"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="2">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">lots</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+      </ion-col>
+      <ion-col size="2">
+        <ion-icon name="chevron-forward-outline" (click)="onOpenLot()"></ion-icon>
+      </ion-col>
+    </ion-item>
+  </ion-row>
+</ion-list>
