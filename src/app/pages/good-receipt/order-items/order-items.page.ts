@@ -42,7 +42,7 @@ export class OrderItemsPage implements OnInit {
                   WHERE SourceTypeCode='PO' 
                   AND PoNumber = '${this.doc.PoNumber}'`;
     try {
-      const data = await this.databaseService.executeCustonQuery(query);
+      const data = await this.databaseService.executeCustomQuery(query);
       if (data.rows.length > 0) {
         this.numberOfItems = data.rows.length;
         for (let i = 0; i < data.rows.length; i++) {

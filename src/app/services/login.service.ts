@@ -24,14 +24,18 @@ export class LoginService {
   ) { }
 
   async login(username: string, password: string) {
-    if (!username || username.trim() === '') {
-      await this.uiService.presentToast('', 'Please enter the username')
-      return;
-    }
-    if (!password || password.trim() === '') {
-      await this.uiService.presentToast('', 'Please enter the password')
-      return;
-    }
+
+
+  if (!username || username.trim() === '') {
+    await this.uiService.presentToast('', 'Please enter the username');
+    return;
+  }
+  if (!password || password.trim() === '') {
+    await this.uiService.presentToast('', 'Please enter the password');
+    return;
+  }
+
+
 
     this.nodeApiService.userLogin(username, password).subscribe({
       next: async (data: any) => {

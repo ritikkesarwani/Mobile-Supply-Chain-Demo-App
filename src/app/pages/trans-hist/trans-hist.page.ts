@@ -151,7 +151,7 @@ export class TransHistPage implements OnInit {
       id
     ]
     try{
-      await this.databaseService.executeCustonQuery(query, payload)
+      await this.databaseService.executeCustomQuery(query, payload)
       this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Transaction status updated successfully');
     } catch (error) {
       console.error("error while updating transaction: ",error)
@@ -177,7 +177,7 @@ export class TransHistPage implements OnInit {
         this.transactionData.splice(index, 1);
 
         this.cdr.detectChanges();
-        await this.databaseService.executeCustonQuery(`DELETE FROM ${TableNames.TRANSACTIONS} WHERE id = ?`, [id]);
+        await this.databaseService.executeCustomQuery(`DELETE FROM ${TableNames.TRANSACTIONS} WHERE id = ?`, [id]);
         this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Transaction deleted successfully');
         
       }

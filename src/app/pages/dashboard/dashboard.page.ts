@@ -52,7 +52,7 @@ export class DashboardPage implements OnInit {
                     AND PoNumber IS NOT NULL
                     ORDER BY PoNumber`;
     try {
-      const docsForReceivingData = await this.databaseService.executeCustonQuery(query);
+      const docsForReceivingData = await this.databaseService.executeCustomQuery(query);
       if (docsForReceivingData.rows.length > 0) {
         this.totalReceipts = docsForReceivingData.rows.length.toString();
       } else {

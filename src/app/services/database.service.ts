@@ -50,7 +50,7 @@ export class DatabaseService {
     return this.db.sqlBatch(data.map(row => [query, row]))
   }
 
-  async executeCustonQuery(query: string, data: any = []) {
+  async executeCustomQuery(query: string, data: any = []) {
     return this.db.executeSql(query, data)
   }
 
@@ -66,14 +66,10 @@ export class DatabaseService {
     return this.db.executeSql(`DROP TABLE IF EXISTS ${table}`, [])
   }
 
-
-
-  // Get value from storage
   async getValue(key: string) {
     return this.storage.get(key);
   }
 
-  // Set value in storage
   async setValue(key: string, value: any) {
     return this.storage.set(key, value);
   }
@@ -81,5 +77,6 @@ export class DatabaseService {
   async clearStorage() {
     return this.storage.clear();
   }
+
 }
 

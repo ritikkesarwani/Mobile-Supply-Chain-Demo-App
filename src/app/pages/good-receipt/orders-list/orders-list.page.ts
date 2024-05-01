@@ -1,5 +1,4 @@
-
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { TableNames } from 'src/app/constants/constants';
@@ -11,13 +10,19 @@ import { DatabaseService } from 'src/app/services/database.service';
   styleUrls: ['./orders-list.page.scss'],
 })
 export class OrdersListPage implements OnInit {
+
   filteredReceipts: any[] = [];
   receipts: any[] = [];
   receiptsDetails: any[] = [];
   searchText: string = '';
   fullDocs: any[] = [];
+  page = 1;
+  filterText: string = '';
 
-  constructor(private navCtrl: NavController, private databaseService: DatabaseService, private router: Router) { }
+  constructor(
+    private navCtrl: NavController,
+    private databaseService: DatabaseService, 
+    ) { }
 
   // Fetch receipt purchase order items from the database
   async ngOnInit() {
@@ -28,61 +33,62 @@ export class OrdersListPage implements OnInit {
   ionViewWillEnter() {
     this.getReceiptPurchaseOrderItems();
   }
-
-  // Function to fetch receipt purchase order items from the database
   async getReceiptPurchaseOrderItems() {
     // Define the SQL query to fetch receipt purchase order items
     const query = `
-      SELECT * FROM ${TableNames.DOCS4RECEIVING} 
-      WHERE PoNumber IS NOT NULL 
-      AND PoHeaderId IS NOT NULL
+      SELECT *,
+      (SELECT COUNT(*) FROM ${TableNames.DOCS4RECEIVING} sub WHERE sub.PoHeaderId = main.PoHeaderId) AS count
+      FROM (
+        SELECT *,
+        COUNT(*) AS count
+        FROM ${TableNames.DOCS4RECEIVING}
+        WHERE PoNumber IS NOT NULL 
+        AND PoHeaderId IS NOT NULL
+        GROUP BY PoHeaderId
+      ) main
+      LIMIT ${this.page * 8}, 8
     `;
 
     try {
       // Execute the query against the database
-      const queryResult = await this.databaseService.executeCustonQuery(query);
-
+      const queryResult = await this.databaseService.executeCustomQuery(query);
       // Check if there are any results returned from the query
       if (queryResult.rows.length > 0) {
-        // Create a Map to store the counts of each PoHeaderId
-        const poHeaderCounts = new Map();
-
         // Iterate over the rows returned from the query
         for (let i = 0; i < queryResult.rows.length; i++) {
           const row = queryResult.rows.item(i);
-
-          // Check if the PoHeaderId is unique or not empty
-          if (row.PoHeaderId && !poHeaderCounts.has(row.PoHeaderId)) {
-            // Add the item to the receiptsDetails array with count = 1
-            this.receiptsDetails.push({ ...row, count: 1 });
-            // Mark the PoHeaderId as seen in the poHeaderCounts Map
-            poHeaderCounts.set(row.PoHeaderId, 1);
-          } else if (row.PoHeaderId) {
-            // If the PoHeaderId is not unique, update the count in the existing item
-            const count = poHeaderCounts.get(row.PoHeaderId) || 0;
-            poHeaderCounts.set(row.PoHeaderId, count + 1);
-
-            // Find the existing item in receiptsDetails and update its count
-            const existingItem = this.receiptsDetails.find(item => item.PoHeaderId === row.PoHeaderId);
-            if (existingItem) {
-              existingItem.count = count + 1;
-            }
-          }
+          // Push each row to the receiptsDetails array
+          this.receiptsDetails.push(row);
         }
-
         // Assign the receiptsDetails array to receipts and filteredReceipts
         this.receipts = [...this.receiptsDetails];
         this.filteredReceipts = [...this.receiptsDetails];
+        // Increment the page number for the next query
+        this.page++;
       }
     } catch (error) {
       console.error("Error fetching receipt purchase order items:", error);
     }
   }
 
-  loadMoreData(event: any) {
-    // this.offset += 10;
-    // this.getReceiptPurchaseOrderItems();
-    // event.target.complete();
+  async loadMoreData(event: any) {
+    try {
+      // Check if the user is currently searching
+      if (this.searchText.trim() === '') {
+        setTimeout(async () => {
+          await this.getReceiptPurchaseOrderItems();
+          event.target.complete();
+        }, 3000); // 3000 milliseconds = 3 seconds
+      } else {
+        // If searching, do not load more data
+        console.log("Skipping data load while searching.");
+        event.target.complete();
+      }
+    } catch (error) {
+      console.error("Error fetching more data:", error);
+      // If there's an error, complete the infinite scroll event to avoid getting stuck in loading state
+      event.target.complete();
+    }
   }
 
   async loadFullDocs() {
@@ -94,7 +100,7 @@ export class OrdersListPage implements OnInit {
     GROUP BY PoNumber`;
 
 
-      const docs = await this.databaseService.executeCustonQuery(query)
+      const docs = await this.databaseService.executeCustomQuery(query)
       if (docs.rows.length > 0) {
         for (let i = 0; i < docs.rows.length; i++) {
           this.fullDocs.push(docs.rows.item(i));
@@ -107,35 +113,35 @@ export class OrdersListPage implements OnInit {
     }
   }
 
-
-  // Filter the receipts based on the search text
   onSearch(event: any) {
-    this.filteredReceipts = this.receipts.filter(item =>
-      item.PoNumber.toString().toLowerCase().includes(this.searchText.toLowerCase())
-    );
+    this.searchText = event.target.value.trim().toLowerCase();
+
+    if (this.searchText === '') {
+      // If the search text is empty, display all receipts
+      this.filteredReceipts = [...this.receiptsDetails];
+    } else {
+      // Filter receipts based on the search text
+      this.filteredReceipts = this.receiptsDetails.filter(item =>
+        item.PoNumber.toString().toLowerCase().includes(this.searchText)
+      );
+    }
   }
 
   // Clear the search text and display all receipts
   onClearSearch() {
     this.searchText = '';
-    this.filteredReceipts = [...this.receipts];
+    this.filteredReceipts = [...this.receiptsDetails];
   }
-
-   // Function to navigate to ItemsDetailsPage with selected PoHeaderId
-  //  goToItems(PoNumber: string) {
-  //   this.router.navigate(['/order-items', PoNumber]);
-  // }
 
   async goToItems(doc: any) {
     await this.databaseService.setValue('selectedPo', doc);
     this.navCtrl.navigateForward('/order-items', {
       queryParams: {
         doc
-      } 
+      }
     });
   }
 
-  // Navigate to the dashboard page
   goToDashboard() {
     this.navCtrl.navigateBack('/dashboard');
   }

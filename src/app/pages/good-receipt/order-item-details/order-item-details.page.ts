@@ -9,6 +9,7 @@ import { SharedService } from 'src/app/services/shared.service';
 import { Subscription } from 'rxjs';
 import { formatDate } from '@angular/common';
 import { NodeApiService } from 'src/app/services/node-api.service';
+import { NetworkService } from 'src/app/services/network.service';
 
 @Component({
   selector: 'app-order-item-details',
@@ -34,15 +35,14 @@ export class OrderItemDetailsPage implements OnInit {
   useravailable: boolean = false;
   enableLot: boolean = false;
   apiResponse: any;
-  hasNetwork: boolean = true;
+  hasNetwork: boolean = false;
   itemData: any[] = [];
   locatorCode: string = '';
   itemRevCode: any;
   qtyRecieved: number = 0;
   qtyRemaining: number = 0;
   postitemSubscription!: Subscription;
-
-  
+  networkSubscription!: Subscription;
 
   constructor(
     private modalController: ModalController,
@@ -51,15 +51,18 @@ export class OrderItemDetailsPage implements OnInit {
     private databaseService: DatabaseService,
     private sharedService: SharedService,
     private apiService: NodeApiService,
+    private networkService: NetworkService,
     private router: Router
 
-  ) { 
+  ) {
     this.databaseService.getValue('loginData').then((val) => {
       this.userDetails = val[0];
       this.useravailable = true
     })
     this.databaseService.getValue('selectedOrg').then((val) => {
+
       this.selectedOrg = val
+      console.log(this.selectedOrg,'selected org')
       this.orgDetails = true
     })
   }
@@ -70,6 +73,19 @@ export class OrderItemDetailsPage implements OnInit {
       this.subInvCode = data['inventory'];
     });
     this.item = await this.databaseService.getValue('selectedItem');
+    this.networkSubscription = this.networkService.isNetworkAvailable().subscribe((networkStatus) => {
+      this.hasNetwork = networkStatus
+    })
+    this.databaseService.getValue('loginData').then((val) => {
+      this.userDetails = val[0];
+      this.useravailable = true
+    })
+    this.databaseService.getValue('selectedOrg').then((val) => {
+
+      this.selectedOrg = val
+      console.log(this.selectedOrg,'selected org')
+      this.orgDetails = true
+    })
     this.loadItemsData();
   }
 
@@ -79,6 +95,9 @@ export class OrderItemDetailsPage implements OnInit {
       this.subInvCode = data['inventory'];
     });
     this.item = await this.databaseService.getValue('selectedItem');
+    this.networkSubscription = this.networkService.isNetworkAvailable().subscribe((networkStatus) => {
+      this.hasNetwork = networkStatus
+    })
     this.loadItemsData();
   }
 
@@ -151,12 +170,11 @@ export class OrderItemDetailsPage implements OnInit {
       }
       else if (this.item.IsLotControlled == "True") {
         if (this.lotData.length == 0) {
-          this.uiProviderService.presentToast(MESSAGES.ERROR,'Please select Lot Number', Color.ERROR);
+          this.uiProviderService.presentToast(MESSAGES.ERROR, 'Please select Lot Number', Color.ERROR);
           throw new Error;
         }
       }
     }
-
 
     if (this.QtyReceiving <= this.item.QtyRemaining) {
       this.postTransaction();
@@ -167,50 +185,50 @@ export class OrderItemDetailsPage implements OnInit {
 
   async postTransaction() {
     if (!this.QtyReceiving) {
-      this.uiProviderService.presentToast(MESSAGES.ERROR,'Please enter quantity receiving');
+      this.uiProviderService.presentToast(MESSAGES.ERROR, 'Please enter quantity receiving');
       return;
     }
     const generatedPayload = this.buildGoodsReceiptPayload(this.item);
     let transactionPayload = this.transactionObject();
     this.uiProviderService.presentLoading('waiting for response...');
-        if (this.hasNetwork) {
-          this.postitemSubscription = this.apiService.performPost(ApiSettings.CREATE_GOODS_RECEIPT, generatedPayload).subscribe({next: async (resp: any) => {
-              const response = resp['Response']
-              if (response[0].RecordStatus === 'S') {
-                transactionPayload.status = response[0].RecordStatus;
-                transactionPayload.receiptInfo = response[0].ReceiptNumber;
-                
-                this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Goods receipt created successfully');
+    if (this.hasNetwork) {
+      this.postitemSubscription = this.apiService.performPost(ApiSettings.CREATE_GOODS_RECEIPT, generatedPayload).subscribe({
+        next: async (resp: any) => {
+          const response = resp['Response']
+          if (response[0].RecordStatus === 'S') {
+            transactionPayload.status = response[0].RecordStatus;
+            transactionPayload.receiptInfo = response[0].ReceiptNumber;
 
-                this.item.QtyRemaining = this.item.QtyRemaining - parseInt(this.QtyReceiving);
-                this.item.QtyReceived = this.item.QtyReceived + parseInt(this.QtyReceiving);
-              } else {
-                transactionPayload.status = response[0].RecordStatus;
-                transactionPayload.error = response[0].Message;
-                this.uiProviderService.presentToast(MESSAGES.ERROR, response[0].Message, Color.ERROR);
-              }
-             await this.sharedService.performDeltaSync(TableNames.DOCS4RECEIVING, this.selectedOrg);
-            },
-            error: (error:any) => {
-              console.error("error while performing post transaction: ", error)
-            },
-            complete: async () => {
-              try {
-                await this.sharedService.insertTransaction(transactionPayload, TableNames.TRANSACTIONS);
-              } catch (error) {
-                console.error("error while inserting transaction: ", error)
-              }
-              this.uiProviderService.dismissLoading();
-            }
-          })
-        } else {
-          await this.sharedService.insertTransaction(transactionPayload, TableNames.TRANSACTIONS);
-          this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Goods receipt saved offline');
-          this.item.QtyRemaining = this.item.QtyRemaining - parseInt(this.QtyReceiving);
-          this.item.QtyReceived = this.item.QtyReceived + parseInt(this.QtyReceiving);
+            this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Goods receipt created successfully');
+
+            this.item.QtyRemaining = this.item.QtyRemaining - parseInt(this.QtyReceiving);
+            this.item.QtyReceived = this.item.QtyReceived + parseInt(this.QtyReceiving);
+          } else {
+            transactionPayload.status = response[0].RecordStatus;
+            transactionPayload.error = response[0].Message;
+            this.uiProviderService.presentToast(MESSAGES.ERROR, response[0].Message, Color.ERROR);
+          }
+         // await this.sharedService.performDeltaSync(TableNames.DOCS4RECEIVING, this.selectedOrg);
+        },
+        error: (error: any) => {
+          console.error("error while performing post transaction: ", error)
+        },
+        complete: async () => {
+          try {
+            await this.sharedService.insertTransaction(transactionPayload, TableNames.TRANSACTIONS);
+          } catch (error) {
+            console.error("error while inserting transaction: ", error)
+          }
           this.uiProviderService.dismissLoading();
         }
-      
+      })
+    } else {
+      await this.sharedService.insertTransaction(transactionPayload, TableNames.TRANSACTIONS);
+      this.uiProviderService.presentToast(MESSAGES.SUCCESS, 'Goods receipt saved offline');
+      this.item.QtyRemaining = this.item.QtyRemaining - parseInt(this.QtyReceiving);
+      this.item.QtyReceived = this.item.QtyReceived + parseInt(this.QtyReceiving);
+      this.uiProviderService.dismissLoading();
+    }
   }
 
   transactionObject() {
@@ -369,7 +387,7 @@ export class OrderItemDetailsPage implements OnInit {
     this.locatorCode = ""
   }
 
-  
+
   onQuantityChange(newQuantity: number) {
     this.QtyReceiving = newQuantity;
   }
