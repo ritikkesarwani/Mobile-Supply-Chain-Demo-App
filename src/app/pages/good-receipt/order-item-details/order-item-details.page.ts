@@ -189,6 +189,7 @@ export class OrderItemDetailsPage implements OnInit {
       return;
     }
     const generatedPayload = this.buildGoodsReceiptPayload(this.item);
+    console.log(generatedPayload,'generate payload')
     let transactionPayload = this.transactionObject();
     this.uiProviderService.presentLoading('waiting for response...');
     if (this.hasNetwork) {
