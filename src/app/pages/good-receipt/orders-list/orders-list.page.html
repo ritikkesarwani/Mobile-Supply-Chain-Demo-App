@@ -25,36 +25,39 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-item *ngFor="let receipt of filteredReceipts">
-      <ion-card class="receipt-card"  (click)="goToItems(receipt)">
-        <ion-card-header>
-          <div class="header-content">
-            <ion-button class="po-number-btn" color="primary">{{ receipt.PoNumber }}</ion-button>
-            <ion-label>{{ receipt.PoType }}</ion-label>
-            <ion-label>{{ receipt.count }} item</ion-label>
+  <cdk-virtual-scroll-viewport itemSize="150" minBufferPx="1600" maxBufferPx="1700" class="ion-content-scroll-host">
+    <ion-list *cdkVirtualFor="let receipt of filteredReceipts" class="receipt-card">
+      <ion-item>
+        <ion-card (click)="goToItems(receipt)">
+          <ion-card-header>
+            <div class="header-content">
+              <ion-button class="po-number-btn" color="primary">{{ receipt.PoNumber }}</ion-button>
+              <ion-label>{{ receipt.PoType }}</ion-label>
+              <ion-label>{{ receipt.count }} item</ion-label>
+            </div>
+          </ion-card-header>
+          <div style="margin-left: 120px; margin-top: -30px;">
+            <p>{{ receipt.VendorName }}</p>
           </div>
-        </ion-card-header>
-        <div style="margin-left: 120px; margin-top: -30px;">
-          <p>{{ receipt.VendorName }}</p>
-        </div>
-        <ion-footer class="footer">
-          <ion-label>{{ receipt.LastUpdateDate }}</ion-label>
-          <ion-label>{{ receipt.Requestor }}</ion-label>
+          <ion-footer class="footer">
+            <ion-label>{{ receipt.LastUpdateDate }}</ion-label>
+            <ion-label>{{ receipt.Requestor }}</ion-label>
+          </ion-footer>
+          <ion-buttons slot="end">
+            <ion-button>
+              <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-card>
+      </ion-item>
+    </ion-list>
 
+    <ion-footer>
+      <ion-infinite-scroll (ionInfinite)="loadMoreData($event)">
+        <ion-infinite-scroll-content loadingSpinner="bubbles"
+          loadingText="Loading more data..."></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-footer>
 
-        </ion-footer>
-        <ion-buttons slot="end">
-          <ion-button>
-            <ion-icon name="chevron-forward-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-card>
-    </ion-item>
-
-  </ion-list>
-  <ion-infinite-scroll (ionInfinite)="loadMoreData($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more data...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </cdk-virtual-scroll-viewport>
 </ion-content>

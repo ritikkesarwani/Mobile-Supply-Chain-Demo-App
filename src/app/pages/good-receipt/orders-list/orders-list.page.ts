@@ -18,6 +18,8 @@ export class OrdersListPage implements OnInit {
   fullDocs: any[] = [];
   page = 1;
   filterText: string = '';
+  isDataLoading: boolean = false;
+
 
   constructor(
     private navCtrl: NavController,

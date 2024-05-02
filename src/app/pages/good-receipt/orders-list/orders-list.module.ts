@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 
 import { OrdersListPageRoutingModule } from './orders-list-routing.module';
 
@@ -13,7 +15,8 @@ import { OrdersListPage } from './orders-list.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    OrdersListPageRoutingModule
+    OrdersListPageRoutingModule,
+    ScrollingModule
   ],
   declarations: [OrdersListPage]
 })
