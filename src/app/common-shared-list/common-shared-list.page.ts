@@ -58,7 +58,7 @@ export class CommonSharedListPage implements OnInit {
 
   async ngOnInit() {
     this.selectedOrg = await this.databaseService.getValue('selectedOrg');
-    this.selectedOrgId = this.selectedOrg.InventoryOrgId;
+    this.selectedOrgId = this.selectedOrg.InventoryOrgId_PK;
     const section = this.fb.group({
       lotQuantity: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
       lotCode: ['', Validators.required],
@@ -207,10 +207,7 @@ export class CommonSharedListPage implements OnInit {
         data: data,
       });
     }
-
-
   }
-
   
   onSerialSelect(event: any) {
     let serFilter = this.commonList.filter((val: any) => val.SerialNumber === this.serialNum);
@@ -235,27 +232,27 @@ export class CommonSharedListPage implements OnInit {
   scanSerial(event: any) {
     this.onSerialSelect(event);
     }
-  // clearSearch($event: any) {
-  // throw new Error('Method not implemented.');
-  // }
-
+  
   async onLotSelect() {
     const modal = await this.modalController.create({
       component: LotListPage,
       componentProps: {
         data: [this.receivedItemMsg[2]?.ItemNumber],
+        
       },
     });
 
     modal.onDidDismiss().then((dataReturned: any) => {
       if (dataReturned.data) {
         let value = dataReturned.data;
+        console.log(value)
         const lastSection = this.sections[this.sections.length - 1];
         lastSection.get('lotCode')?.setValue(value.data);
       }
     });
     return await modal.present();
   }
+  
 
 
 
