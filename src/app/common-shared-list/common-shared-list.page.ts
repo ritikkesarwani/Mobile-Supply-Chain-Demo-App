@@ -232,40 +232,8 @@ export class CommonSharedListPage implements OnInit {
   scanSerial(event: any) {
     this.onSerialSelect(event);
     }
-  
-  async onLotSelect() {
-    const modal = await this.modalController.create({
-      component: LotListPage,
-      componentProps: {
-        data: [this.receivedItemMsg[2]?.ItemNumber],
-        
-      },
-    });
 
-    modal.onDidDismiss().then((dataReturned: any) => {
-      if (dataReturned.data) {
-        let value = dataReturned.data;
-        console.log(value)
-        const lastSection = this.sections[this.sections.length - 1];
-        lastSection.get('lotCode')?.setValue(value.data);
-      }
-    });
-    return await modal.present();
-  }
-  
-
-
-
-  deleteSerial(index: number) {
-    this.serialList.splice(index, 1);
-    this.cdr.detectChanges();
-  }
-
-  goBack() {
-    this.modalController.dismiss();
-  }
-
-
+    
   addSection() {
     if (this.totalLotTypedQuantity < this.maxTotalQuantity) {
       const lastSection = this.sections[this.sections.length - 1];
@@ -295,6 +263,46 @@ export class CommonSharedListPage implements OnInit {
     this.updateTotalQuantity();
   }
 
+
+
+  
+  async onLotSelect() {
+    const modal = await this.modalController.create({
+      component: LotListPage,
+      componentProps: {
+        data: [this.receivedItemMsg[2]?.ItemNumber],
+        
+      },
+    });
+
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log(dataReturned,"jiiji")
+      if (dataReturned.data) {
+        let value = dataReturned.data;
+        console.log(value)
+        const lastSection = this.sections[this.sections.length - 1];
+        lastSection.get('lotCode')?.setValue(value.data);
+      }
+    });
+    return await modal.present();
+  }
+  
+  async onDone() {
+    const selectedLot = this.sections.map(section => section.get('lotCode')?.value);
+    this.modalController.dismiss({
+        selectedLot: selectedLot
+    });
+}
+
+
+  deleteSerial(index: number) {
+    this.serialList.splice(index, 1);
+    this.cdr.detectChanges();
+  }
+
+  goBack() {
+    this.modalController.dismiss();
+  }
 
 
   updateTotalQuantity() {

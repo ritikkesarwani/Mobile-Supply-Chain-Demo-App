@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { TableNames } from 'src/app/constants/constants';
+import { Color, MESSAGES, TableNames } from 'src/app/constants/constants';
 import { DatabaseService } from 'src/app/services/database.service';
+import { UiService } from 'src/app/services/ui.service';
 
 @Component({
   selector: 'app-orders-list',
@@ -21,8 +22,9 @@ export class OrdersListPage implements OnInit {
 
   constructor(
     private navCtrl: NavController,
-    private databaseService: DatabaseService, 
-    ) { }
+    private databaseService: DatabaseService,
+    private uiService: UiService
+  ) { }
 
   // Fetch receipt purchase order items from the database
   async ngOnInit() {
@@ -50,10 +52,10 @@ export class OrdersListPage implements OnInit {
           LIMIT 8 OFFSET ${this.page * 8}
         ) main
       `;
-  
+
       // Execute the query against the database
       const queryResult = await this.databaseService.executeCustomQuery(query);
-  
+
       // Check if there are any results returned from the query
       if (queryResult.rows.length > 0) {
         // Iterate over the rows returned from the query
@@ -72,7 +74,7 @@ export class OrdersListPage implements OnInit {
       console.error("Error fetching receipt purchase order items:", error);
     }
   }
-  
+
 
   async loadMoreData(event: any) {
     try {
@@ -84,7 +86,7 @@ export class OrdersListPage implements OnInit {
         }, 3000); // 3000 milliseconds = 3 seconds
       } else {
         // If searching, do not load more data
-      //  console.log("Skipping data load while searching.");
+        //  console.log("Skipping data load while searching.");
         event.target.complete();
       }
     } catch (error) {
@@ -123,12 +125,46 @@ export class OrdersListPage implements OnInit {
       // If the search text is empty, display all receipts
       this.filteredReceipts = [...this.receiptsDetails];
     } else {
-      // Filter receipts based on the search text
+      // Filter receipts based on the search text across the entire dataset
       this.filteredReceipts = this.receiptsDetails.filter(item =>
         item.PoNumber.toString().toLowerCase().includes(this.searchText)
       );
     }
   }
+
+
+  
+  async scan(val: any) {
+    console.log(val)
+    if (val) {
+      const query = `SELECT * FROM ${TableNames.DOCS4RECEIVING} WHERE PoNumber = '${val}' GROUP BY PoNumber`;
+      const data = await this.databaseService.executeCustomQuery(query)
+      let pos = []
+      if (data.rows.length > 0) {
+        for (let i = 0; i < data.rows.length; i++) {
+          pos.push(data.rows.item(i));
+        }
+        if (pos.length > 0) {
+          this.goToItems(pos[0]);
+          console.log(pos);
+          console.log(pos[0])
+        } else {
+          this.uiService.presentToast(MESSAGES.ERROR, `PO Number ${val} not found`, Color.ERROR);
+        }
+      } else {
+        console.log('No data');
+        this.uiService.presentToast(MESSAGES.ERROR, `PO Number ${val} not found`, Color.ERROR);
+      }
+    } else {
+      this.uiService.presentToast(MESSAGES.ERROR, `Scanner does not scan a value correctly`, Color.ERROR);
+    }
+    
+  }
+  clearSearch() {
+    this.searchText = '';
+    this.receipts = [...this.receiptsDetails]
+  }
+
 
   // Clear the search text and display all receipts
   onClearSearch() {

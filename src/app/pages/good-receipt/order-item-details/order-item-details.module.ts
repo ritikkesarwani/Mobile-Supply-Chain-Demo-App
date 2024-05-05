@@ -11,6 +11,7 @@ import { SerialsPage } from 'src/app/shared-components/serials/serials.page';
 import { LotsPage } from 'src/app/shared-components/lots/lots.page';
 import { UomPage } from 'src/app/shared-components/uom/uom.page';
 
+
 @NgModule({
   imports: [
     CommonModule,

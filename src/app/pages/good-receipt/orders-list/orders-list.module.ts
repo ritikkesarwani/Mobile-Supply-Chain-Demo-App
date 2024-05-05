@@ -9,6 +9,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { OrdersListPageRoutingModule } from './orders-list-routing.module';
 
 import { OrdersListPage } from './orders-list.page';
+import { SharedModule } from 'src/app/shared module/shared.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { OrdersListPage } from './orders-list.page';
     FormsModule,
     IonicModule,
     OrdersListPageRoutingModule,
-    ScrollingModule
+    ScrollingModule,
+    SharedModule
   ],
   declarations: [OrdersListPage]
 })

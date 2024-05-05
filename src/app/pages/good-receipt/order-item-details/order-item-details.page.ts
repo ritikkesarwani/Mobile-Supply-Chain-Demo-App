@@ -128,7 +128,7 @@ export class OrderItemDetailsPage implements OnInit {
             this.locatorCode = receivedData.data;
             break;
           case 'LOT-CONTROLLED':
-            this.lotData = receivedData.data;
+            this.lotData = capturedData.data.selectedLot[0];
             break;
           case 'SERIAL-CONTROLLED':
             this.SerialData = receivedData.data;

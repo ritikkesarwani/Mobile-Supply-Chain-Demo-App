@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { TableNames } from 'src/app/constants/constants';
+import { Color, MESSAGES, TableNames } from 'src/app/constants/constants';
 import { DatabaseService } from 'src/app/services/database.service';
+import { UiService } from 'src/app/services/ui.service';
 
 @Component({
   selector: 'app-order-items',
@@ -24,7 +25,8 @@ export class OrderItemsPage implements OnInit {
     private route: ActivatedRoute,
     private databaseService: DatabaseService,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    private uiService: UiService
   ) {
     this.activatedRouteSub = new Subscription();
   }
@@ -61,14 +63,47 @@ export class OrderItemsPage implements OnInit {
     this.router.navigate(['/orders-list']);
   }
 
+ 
+  onScan(event: any) {
+    if (event){
+      const item = this.docsForReceiving.find((item) => {
+        return (item.ItemNumber.toLowerCase() === event.toLowerCase())
+      })
+      if (item) {
+        this.goToItemDetails(item);
+      } else {
+        this.uiService.presentToast(MESSAGES.ERROR, `Item ${event} not found`, Color.ERROR);
+      }
+    } else {
+      this.uiService.presentToast(MESSAGES.ERROR, `Scanner does not scan a value correctly`, Color.ERROR);
+    }
+  }
+
+  onClearSearch(event: any) {
+    event.detail.value = "";
+    this.getItemsByPoHeaderId();
+  }
+
+  onSearch(event: any) {
+    this.Orders = this.docsForReceiving.filter((order) => {
+      return (order.ItemNumber.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1);
+    })
+  }
+
   async goToItemDetails(item: any) {
     await this.databaseService.setValue('selectedItem', item);
     this.router.navigate(['/order-item-details'], {
-      queryParams: { item }
+    queryParams: {
+        item
+      }
     });
   }
 
-  ngOnDestroy() {
-    this.activatedRouteSub.unsubscribe();
-  }
+
+  // async goToItemDetails(item: any) {
+  //   await this.databaseService.setValue('selectedItem', item);
+  //   this.router.navigate(['/order-item-details'], {
+  //     queryParams: { item }
+  //   });
+  // }
 }

@@ -120,6 +120,75 @@
         </ion-button>
       </ion-col>
     </ion-row>
+
+    <ion-footer>
+      <ion-button (click)="onDone()">DONE</ion-button>
+    </ion-footer>
   </ng-template>
+
+
+  
+  <ng-template #serialTemplate>
+    <ion-card>
+      <div class="card-header">
+        <ion-card-subtitle>PO#{{ this.receivedItemMsg[2]?.PoNumber }}</ion-card-subtitle>
+        <ion-label>{{ this.receivedItemMsg[3] }} Ea</ion-label>
+      </div>
+      <ion-card-title>{{ this.receivedItemMsg[2]?.ItemDesc }}</ion-card-title>
+    </ion-card>
+
+    <ion-list>
+      <ion-item class="ion-margin">
+        <ion-toolbar>
+          <ion-buttons>
+            <ion-grid>
+              <ion-row>
+                <ion-col size="10">
+                  <ion-label> Serial# </ion-label>
+                  <ion-input type="text" [(ngModel)]="serialNum" (ionInput)="onSerialSelect($event)"
+                    placeholder="Scan Serial"></ion-input>
+                </ion-col>
+                <ion-col size="2">
+                  <app-scan [searchTerm]="serialNum" (sendScanValue)="scanSerial($event)"></app-scan>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-buttons>
+        </ion-toolbar>
+        
+      </ion-item>
+
+      <ion-item class="ion-margin">
+        <table>
+          <tr>
+            <th>Min Serial</th>
+            <th>Max Serial</th>
+            <th>Quantity</th>
+          </tr>
+          <tr>
+            <th>
+              <ion-input type="text" placeholder="Min Serial"></ion-input>
+            </th>
+            <th>
+              <ion-input type="text" placeholder="Max Serial"></ion-input>
+            </th>
+            <th><ion-input type="text" placeholder="Qty"></ion-input></th>
+          </tr>
+        </table>
+      </ion-item>
+
+      <ion-list class="ion-margin">
+        <ion-item *ngFor="let option of serialList; let i = index">
+          <ion-label class="ion-text-start">
+            <label for="org-{{option}}">{{ option}}</label>
+          </ion-label>
+          <ion-label class="ion-text-end">
+            <ion-icon  name="trash-outline" (click)="deleteSerial(i)"></ion-icon>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-list>
+  </ng-template>
+
 
 </ion-content>

@@ -43,12 +43,12 @@ const routes: Routes = [
   {
     path: 'lot-list',
     loadChildren: () => import('./pages/lot-list/lot-list.module').then( m => m.LotListPageModule)
-  },  {
+  },
+  {
     path: 'trans-hist',
     loadChildren: () => import('./pages/trans-hist/trans-hist.module').then( m => m.TransHistPageModule)
   },
-
-  
+ 
 ];
 
 @NgModule({
